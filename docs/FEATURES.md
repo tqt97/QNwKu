@@ -77,6 +77,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 
 - Desktop: cột giới thiệu, vùng nội dung rộng, card nhiều cột.
 - Mobile: nội dung một cột, thanh điều hướng cố định dưới màn hình, card địa điểm hai cột.
+- Ở màn hình rộng đến 760px, giao diện chuyển sang một cột để tránh sidebar làm chật vùng nội dung; hero cho phép nút hành động xuống dòng trên màn hình rất hẹp.
 - Nút thêm trên thanh điều hướng mobile mở form địa điểm khi đang ở tab địa điểm; ở các tab còn lại mở form sự kiện.
 - Nút thêm ở đầu mỗi danh sách có accessible name; nhãn hiển thị cạnh biểu tượng trên mobile khi đủ chỗ và thu gọn ở màn hình rất hẹp.
 - Thao tác sửa/xóa địa điểm nằm trong menu mở bằng nút ba chấm luôn hiển thị; nút và liên kết có focus ring rõ khi dùng bàn phím.

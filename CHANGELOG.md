@@ -25,6 +25,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Tăng tương phản cho trích dẫn ở phần giới thiệu.
 - Mở rộng vùng chạm cho nút sửa, xóa, checkbox và CTA lên tối thiểu 44px.
 - Thêm nút sửa sự kiện có nhãn hỗ trợ bàn phím, tách riêng khỏi nút xóa.
+- Chuyển layout một cột ở breakpoint 760px và cho action cuối hero tự xuống dòng ở màn hình hẹp.
 
 ## [1.0.0] - 2026-11-15
 
