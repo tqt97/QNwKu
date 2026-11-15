@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, MapPinned, Plus, Sparkles, Trash2, X } from 'lucide-react';
+import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, Plus, Sparkles, Trash2, X } from 'lucide-react';
 import type { AppData, ChecklistItem, EventItem, Place } from '@/lib/types';
 
 type FormKind = 'event' | 'place' | 'check' | null;
@@ -119,7 +119,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
     <header className="topbar"><a href="#home" className="brand"><span className="brand-mark"><Heart size={19} fill="currentColor" /></span><span>KU ơi, mình đi đâu thế<small>Lên kèo đi chơi thôi ♡</small></span></a><span className="topbar-note"><Sparkles size={15}/> một góc nhỏ của hai đứa</span></header>
 
     <div className="layout" id="home">
-      <aside className="side-intro"><div className="sticker">♡</div><p className="eyebrow">A LITTLE PLACE FOR US</p><h1>Những ngày<br/>mình mong chờ</h1><p className="intro-copy">Lưu lại những nơi muốn đến, những món muốn thử và mọi điều nho nhỏ trước ngày gặp nhau.</p><div className="side-note"><span>💌</span><p>“Đi đâu cũng được,<br/>miễn là đi cùng nhau.”</p></div><span className="side-flower">✿</span></aside>
+      <aside className="side-intro"><div className="sticker">♡</div><h1>Những ngày<br/>mình mong chờ</h1><p className="intro-copy">Lưu lại những nơi muốn đến, những món muốn thử và mọi điều nho nhỏ trước ngày gặp nhau.</p><div className="side-note"><span>💌</span><p>“Đi đâu cũng được,<br/>miễn là đi cùng nhau.”</p></div><span className="side-flower">✿</span></aside>
 
       <section className="content">
         {connectionError && <div className="connection-warning">Chưa đọc được dữ liệu Supabase: {connectionError}</div>}

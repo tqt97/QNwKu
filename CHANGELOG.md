@@ -29,6 +29,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Đảm bảo nút thêm dạng chỉ có icon vẫn rộng tối thiểu 44px trên màn hình rất hẹp.
 - Rút gọn nút thêm ở đầu danh sách trên mobile, bỏ lời chào lặp và thêm mũi tên cuộn từ hero.
 - Đổi tagline thành “Lên kèo đi chơi thôi ♡”.
+- Bỏ dòng eyebrow tiếng Anh lặp ở phần giới thiệu.
 - Đơn giản hóa mục lưu món/quán thành danh sách text có checkbox đã thử, giữ nguyên dữ liệu chi tiết cũ trong schema.
 - Đổi nút dưới cùng thành “Thêm mới” với bộ chọn loại nội dung trước khi mở form.
 

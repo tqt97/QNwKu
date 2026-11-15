@@ -80,6 +80,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Nút mở menu địa điểm có vùng chạm tối thiểu 44px; input form trên mobile giữ cỡ 16px để tránh tự phóng to khi focus trên iOS.
 - Các nút icon, checkbox, xóa và CTA có vùng chạm tối thiểu 44×44px mà vẫn giữ icon nhỏ gọn.
 - Mobile bỏ khối chào lặp lại và chỉ giữ nút cộng dạng icon ở đầu danh sách; tagline chuyển thành “Lên kèo đi chơi thôi ♡”.
+- Bỏ eyebrow tiếng Anh “A LITTLE PLACE FOR US” để phần giới thiệu gọn hơn.
 - Hero dùng mũi tên xuống có nhãn truy cập để cuộn tới danh sách dịp sắp tới.
 - Metadata sự kiện tách giờ và địa điểm thành hai mục; trên mobile hiển thị thành hai dòng để tránh cắt mất địa điểm.
 - Tên sự kiện là nút sửa có accessible name, thao tác được bằng Tab/Enter; nút xóa là điều khiển riêng.
