@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/client';
 import type { AppData, ChecklistItem, EventItem, Place } from '@/lib/types';
 
-export type RealtimeStatus = 'connecting' | 'connected' | 'offline' | 'sync-error' | 'demo';
+export type RealtimeStatus = 'connecting' | 'connected' | 'offline' | 'sync-error';
 
 function upsert<T extends { id: string }>(rows: T[], row: T) {
   const index = rows.findIndex(current => current.id === row.id);
@@ -19,8 +19,8 @@ function sortEvents(events: EventItem[]) {
 
 export function usePlannerRealtime(setData: Dispatch<SetStateAction<AppData>>, setStatus: (status: RealtimeStatus) => void) {
   useEffect(() => {
-    const client = supabase;
-    if (!client) { setStatus('demo'); return; }
+    const client = createClient();
+    if (!client) { setStatus('offline'); return; }
 
     let syncGeneration = 0;
     let changedDuringSnapshot = { events: false, places: false, checklist: false };

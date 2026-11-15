@@ -4,6 +4,12 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 
 ## [Unreleased]
 
+### Security
+
+- Thay quyền CRUD public bằng Supabase Auth dùng phiên cookie SSR, xác thực membership ở trang và API, cùng RLS chỉ cho tài khoản có trong `planner_members`.
+- Thêm màn hình khóa toàn trang tông pastel; nội dung planner chỉ được truy vấn sau khi server xác minh phiên và membership.
+- Thêm hướng dẫn cấu hình một tài khoản dùng chung, mật khẩu riêng mạnh và cấp quyền database; bỏ dữ liệu demo khỏi luồng trang.
+
 ### Changed
 
 - Đồng bộ realtime INSERT/UPDATE/DELETE cho sự kiện, món/quán và checklist; tự tải snapshot khi kết nối/kết nối lại và hiển thị trạng thái kết nối.

@@ -2,6 +2,8 @@
 
 ## Trang chủ
 
+Khi mở trang, nhập mật khẩu tài khoản planner để vào nội dung. Cùng một tài khoản được dùng trên các thiết bị. Nếu báo chưa được mời, quản trị viên cần thêm user vào `planner_members` theo [hướng dẫn bảo mật](SECURITY.md).
+
 Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa; mũi tên phía dưới cuộn tới lịch. Phần “Những dịp sắp tới” chỉ liệt kê lịch tương lai theo thời gian gần trước; mở menu dấu ba chấm như ở danh sách món/quán để chỉnh sửa hoặc xóa từng hàng. Tab “Sự kiện” xem cả lịch cũ và lịch sắp tới.
 
 Khi kết nối Supabase, thay đổi từ thiết bị khác sẽ tự hiện trong danh sách mà không cần tải lại trang. Trạng thái trên thanh đầu trang cho biết đang kết nối, đã đồng bộ trực tiếp hay đang dùng dữ liệu xem thử.
@@ -41,6 +43,4 @@ Ngay dưới lịch hẹn là danh sách “Chỗ xinh mình muốn ghé”, ti�
 - **Địa điểm:** checklist món và quán muốn thử.
 - **Thêm mới:** chọn tạo sự kiện, mục chuẩn bị hoặc mục muốn lưu.
 
-## Dữ liệu demo
-
-Khi chưa cấu hình Supabase, trang dùng dữ liệu mẫu để xem trước giao diện. Demo chỉ để đọc; thao tác ghi báo thiếu cấu hình Supabase. Sau khi cấu hình Supabase, dữ liệu thật sẽ được đọc từ database.
+Nếu Supabase chưa được cấu hình, trang chỉ hiển thị thông báo thiết lập và không cung cấp dữ liệu planner.

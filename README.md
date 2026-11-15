@@ -2,7 +2,7 @@
 
 > Một góc nhỏ để đếm ngày gặp nhau, lưu quán xinh và chuẩn bị những điều đáng nhớ.
 
-Ứng dụng kế hoạch đôi, tối ưu cho điện thoại. Bản MVP dùng **Next.js + TypeScript + Supabase + Vercel**, hiện mở public CRUD và chưa yêu cầu đăng nhập.
+Ứng dụng kế hoạch đôi, tối ưu cho điện thoại. Dùng **Next.js + TypeScript + Supabase Auth/Postgres + Vercel**, khóa nội dung trước khi xác thực và kiểm soát quyền bằng RLS.
 
 ## Mục lục
 
@@ -26,7 +26,8 @@
 - Hiển thị tiến độ checklist theo sự kiện gần nhất.
 - Tự đồng bộ sự kiện, món/quán và checklist theo thời gian thực giữa các thiết bị dùng chung Supabase.
 - Mobile-first: điều hướng dưới màn hình nhỏ, form dễ thao tác, layout thích ứng desktop.
-- Bảng màu hồng phấn, lavender và kem; dữ liệu demo có sẵn khi chưa cấu hình Supabase.
+- Màn hình khóa pastel, dùng một tài khoản Supabase Auth chung cho hai thiết bị.
+- RLS chỉ cấp quyền cho user trong `planner_members`; API cũng xác thực session ở server.
 
 Chi tiết: [docs/FEATURES.md](docs/FEATURES.md). Hướng dẫn giao diện: [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
 
@@ -34,17 +35,17 @@ Chi tiết: [docs/FEATURES.md](docs/FEATURES.md). Hướng dẫn giao diện: [d
 
 ```text
 app/
-  api/[table]/route.ts   API CRUD public cho 3 bảng cho phép
+  api/[table]/route.ts   API CRUD kiểm tra session và membership
   globals.css            Giao diện responsive và theme
   layout.tsx             Metadata và root layout
   page.tsx               Tải dữ liệu phía server
   planner.tsx            Giao diện và tương tác CRUD
 lib/
-  data.ts                Đọc dữ liệu Supabase và dữ liệu demo
-  supabase.ts            Supabase client
+  data.ts                Đọc dữ liệu bằng phiên người dùng
+  supabase/              Browser, server và middleware Auth clients
   types.ts               Kiểu dữ liệu ứng dụng
 supabase/
-  schema.sql             Bảng, index và RLS policies public
+  schema.sql             Bảng, membership, index và RLS policies
 docs/
   ARCHITECTURE.md        Kiến trúc, luồng dữ liệu, mô hình dữ liệu
   FEATURES.md            Đặc tả tính năng và hành vi
@@ -74,7 +75,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Mở [http://localhost:3000](http://localhost:3000). Nếu chưa có biến Supabase, trang hiển thị dữ liệu demo. Các thao tác ghi yêu cầu cấu hình Supabase.
+Mở [http://localhost:3000](http://localhost:3000). Cần cấu hình Supabase Auth để đăng nhập và mở planner.
 
 ```bash
 npm run dev        # môi trường phát triển
@@ -87,21 +88,30 @@ npm start          # chạy production build sau khi build
 
 1. Tạo project Supabase.
 2. Trong **SQL Editor**, chạy nội dung `supabase/schema.sql`.
-3. Từ API settings, lấy **Project URL** và **anon/public key**.
-4. Điền `.env.local`:
+3. Tạo một user email trong Supabase Authentication → Users, đặt mật khẩu riêng dài và khó đoán (không dùng ngày sinh/mã 4 số). Cấp membership trong SQL Editor:
+
+   ```sql
+   insert into public.planner_members (user_id)
+   select id from auth.users where email = 'EMAIL_DA_TAO'
+   on conflict (user_id) do nothing;
+   ```
+
+4. Từ API settings, lấy **Project URL** và **anon/public key**.
+5. Điền `.env.local`:
 
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+   NEXT_PUBLIC_PLANNER_EMAIL=EMAIL_DA_TAO
    ```
 
-5. Khởi động lại dev server. Khi kết nối thành công, ứng dụng đọc ba bảng Supabase.
+6. Khởi động lại dev server. Khi đăng nhập thành công, ứng dụng đọc ba bảng planner.
 
 ## Deploy Vercel
 
 1. Đưa source lên repository GitHub.
 2. Trên Vercel chọn **Add New → Project**, import repository.
-3. Thêm `NEXT_PUBLIC_SUPABASE_URL` và `NEXT_PUBLIC_SUPABASE_ANON_KEY` vào Environment Variables.
+3. Thêm `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` và `NEXT_PUBLIC_PLANNER_EMAIL` vào Environment Variables.
 4. Chọn **Deploy**. Vercel dùng lệnh mặc định `next build`.
 5. Push commit mới lên nhánh production để tạo deployment tiếp theo.
 
@@ -109,9 +119,9 @@ Xem [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) để biết chi tiết và cách x
 
 ## Quyền truy cập và dữ liệu
 
-Ứng dụng hiện **public CRUD, không đăng nhập**. Người truy cập có thể đọc, thêm, sửa và xóa bản ghi. Chỉ dùng cho dữ liệu không nhạy cảm; người khác có thể thay đổi kế hoạch nếu truy cập được trang.
+Ứng dụng yêu cầu đăng nhập Supabase Auth. Server/API xác minh JWT và membership; Postgres RLS chặn quyền `anon` và chỉ cho user trong `planner_members` thao tác. Hai thiết bị dùng chung một tài khoản để cùng xem và cập nhật dữ liệu.
 
-Chỉ dùng Supabase anon/public key trong ứng dụng. **Không dùng `service_role` key** ở trình duyệt, biến `NEXT_PUBLIC_*`, hoặc commit vào repository. RLS hiện cấp quyền public cho ba bảng; khi bổ sung đăng nhập cần chuyển sang policy xác thực và kiểm tra quyền theo người dùng/không gian chung. Xem [docs/SECURITY.md](docs/SECURITY.md).
+Chỉ dùng Supabase anon/public key trong ứng dụng. **Không dùng `service_role` key** ở trình duyệt, biến `NEXT_PUBLIC_*`, hoặc commit vào repository. Xem [docs/SECURITY.md](docs/SECURITY.md) để thiết lập user/membership và vận hành.
 
 ## Tài liệu chi tiết
 

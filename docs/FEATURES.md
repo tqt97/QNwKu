@@ -2,13 +2,13 @@
 
 ## Mục tiêu sản phẩm
 
-Một web riêng để hai người cùng ghi nhớ ngày gặp, lưu các địa điểm muốn thử và chuẩn bị cho sự kiện. MVP ưu tiên dùng nhanh trên điện thoại, thao tác rõ ràng, không cần tài khoản và public CRUD theo yêu cầu hiện tại.
+Một web riêng để hai người cùng ghi nhớ ngày gặp, lưu các địa điểm muốn thử và chuẩn bị cho sự kiện. MVP dùng nhanh trên điện thoại, khóa bằng Supabase Auth và giới hạn dữ liệu bằng membership/RLS.
 
 ## Người dùng và quyền hiện tại
 
-- Khách truy cập: xem, tạo, sửa và xóa mọi dữ liệu.
-- Không có tài khoản, vai trò hay dữ liệu riêng tư trong phiên bản này.
-- Mọi nội dung được coi là công khai; không nhập thông tin nhạy cảm.
+- Hai người dùng chung một tài khoản Supabase Auth được thêm vào `planner_members`.
+- Khách chưa đăng nhập hoặc không có membership không nhận planner data.
+- Server page/API xác minh claims và membership; RLS kiểm soát quyền ở database.
 
 ## Feature 1 — Countdown và sự kiện
 
@@ -104,8 +104,8 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Một sự kiện có thể liên kết nhiều địa điểm và checklist.
 - Địa điểm không bắt buộc gắn sự kiện.
 - Checklist không bắt buộc gắn sự kiện.
-- Bản hiện tại không lọc/sắp xếp địa điểm, chưa có tìm kiếm, ảnh tải lên, nhắc lịch, offline mode hoặc xác thực.
-- Không có chống spam/rate limit cho CRUD public.
+- Bản hiện tại không lọc/sắp xếp địa điểm, chưa có tìm kiếm, ảnh tải lên, nhắc lịch hoặc offline mode.
+- Chưa có rate limit riêng cho đăng nhập/API.
 
 ## Tiêu chí nghiệm thu thủ công
 
