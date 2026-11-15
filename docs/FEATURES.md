@@ -78,6 +78,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Desktop: cột giới thiệu, vùng nội dung rộng, card nhiều cột.
 - Mobile: nội dung một cột, thanh điều hướng cố định dưới màn hình, card địa điểm hai cột.
 - Nút thêm trên thanh điều hướng mobile mở form địa điểm khi đang ở tab địa điểm; ở các tab còn lại mở form sự kiện.
+- Nút thêm ở đầu mỗi danh sách có accessible name; nhãn hiển thị cạnh biểu tượng trên mobile khi đủ chỗ và thu gọn ở màn hình rất hẹp.
 - Màu chính: nền hồng kem `#fffafb`, hồng dâu, lavender, mint; chữ nâu tím.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.
 - Thanh cuộn dùng kiểu mảnh, màu hồng xám nhẹ trên trình duyệt hỗ trợ tùy chỉnh.
