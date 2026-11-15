@@ -27,6 +27,8 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Thêm nút sửa sự kiện có nhãn hỗ trợ bàn phím, tách riêng khỏi nút xóa.
 - Chuyển layout một cột ở breakpoint 760px và cho action cuối hero tự xuống dòng ở màn hình hẹp.
 - Đảm bảo nút thêm dạng chỉ có icon vẫn rộng tối thiểu 44px trên màn hình rất hẹp.
+- Rút gọn nút thêm ở đầu danh sách trên mobile, bỏ lời chào lặp và thêm mũi tên cuộn từ hero.
+- Đổi tagline thành “Lên kèo đi chơi thôi ♡”.
 
 ## [1.0.0] - 2026-11-15
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { CalendarDays, Check, ChevronRight, Clock3, Coffee, Heart, MapPin, MapPinned, Plus, Sparkles, Trash2, X } from 'lucide-react';
+import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, MapPinned, Plus, Sparkles, Trash2, X } from 'lucide-react';
 import type { AppData, ChecklistItem, EventItem, Place } from '@/lib/types';
 
 type FormKind = 'event' | 'place' | 'check' | null;
@@ -100,25 +100,23 @@ export default function Planner({ initialData, connectionError }: { initialData:
   const visiblePlaces = tab === 'home' ? data.places.slice(0, 3) : data.places;
 
   return <main className="app-shell">
-    <header className="topbar"><a href="#home" className="brand"><span className="brand-mark"><Heart size={19} fill="currentColor" /></span><span>KU ơi, mình đi đâu thế<small>our little love notes</small></span></a><span className="topbar-note"><Sparkles size={15}/> một góc nhỏ của hai đứa</span></header>
+    <header className="topbar"><a href="#home" className="brand"><span className="brand-mark"><Heart size={19} fill="currentColor" /></span><span>KU ơi, mình đi đâu thế<small>Lên kèo đi chơi thôi ♡</small></span></a><span className="topbar-note"><Sparkles size={15}/> một góc nhỏ của hai đứa</span></header>
 
     <div className="layout" id="home">
       <aside className="side-intro"><div className="sticker">♡</div><p className="eyebrow">A LITTLE PLACE FOR US</p><h1>Những ngày<br/>mình mong chờ</h1><p className="intro-copy">Lưu lại những nơi muốn đến, những món muốn thử và mọi điều nho nhỏ trước ngày gặp nhau.</p><div className="side-note"><span>💌</span><p>“Đi đâu cũng được,<br/>miễn là đi cùng nhau.”</p></div><span className="side-flower">✿</span></aside>
 
       <section className="content">
         {connectionError && <div className="connection-warning">Chưa đọc được dữ liệu Supabase: {connectionError}</div>}
-        <div className="mobile-welcome"><p className="eyebrow">A LITTLE PLACE FOR US</p><h1>Nhà của tụi mình <span>♡</span></h1></div>
-
         {tab !== 'places' && <section className="hero-card">
           <div className="hero-sparkle sparkle-one">✦</div><div className="hero-sparkle sparkle-two">✧</div>
           <div className="hero-top"><span className="pill"><Heart size={13} fill="currentColor"/> {featured ? 'NGÀY TỤI MÌNH GẶP NHAU' : 'THÊM MỘT KHOẢNH KHẮC'}</span><button className="icon-button hero-edit" aria-label="Sửa sự kiện" onClick={() => featured ? openEdit('event', featured) : openCreate('event')}><CalendarDays size={17}/></button></div>
           {featured ? <><h2>{featured.title}</h2><p className="hero-date"><CalendarDays size={15}/>{prettyDate(featured.starts_at)}<span className="dot">·</span><MapPin size={15}/>{featured.location || 'Chưa chọn địa điểm'}</p>
             <div className="countdown" aria-label="Thời gian đếm ngược">{clock?.passed ? <div className="today-message">Hẹn hò đang diễn ra đó! Tận hưởng từng phút bên nhau nha ♡</div> : <>{[[clock?.days ?? 0,'ngày'],[clock?.hours ?? 0,'giờ'],[clock?.minutes ?? 0,'phút'],[clock?.seconds ?? 0,'giây']].map(([n,label]) => <div className="time-unit" key={String(label)}><strong>{String(n).padStart(2,'0')}</strong><span>{label}</span></div>)}</>}</div>
-            <div className="hero-bottom"><span>đếm từng chút một để gặp cậu <span className="heart-pulse">♥</span></span><button className="text-button" onClick={() => setTab('events')}>Kế hoạch của mình <ChevronRight size={15}/></button></div>
+            <div className="hero-bottom"><span>đếm từng chút một để gặp cậu <span className="heart-pulse">♥</span></span><button type="button" className="text-button scroll-down" aria-label="Cuộn xuống những dịp sắp tới" onClick={()=>document.getElementById('upcoming-events')?.scrollIntoView({behavior:'smooth',block:'start'})}><ChevronDown size={20}/></button></div>
           </> : <><h2>Ngày gặp nhau<br/>đang chờ được lên lịch</h2><p className="hero-date">Tạo một sự kiện để bắt đầu đếm ngược ♡</p><button className="primary-button" onClick={() => openCreate('event')}><Plus size={17}/>Tạo sự kiện đầu tiên</button></>}
         </section>}
 
-        {(tab === 'home' || tab === 'events') && <section className="section-block">
+        {(tab === 'home' || tab === 'events') && <section className="section-block" id="upcoming-events">
           <div className="section-heading"><div><p className="eyebrow">LỊCH HẸN DỄ THƯƠNG</p><h2>{tab === 'events' ? 'Tất cả sự kiện' : 'Những dịp sắp tới'}</h2></div><button className="add-button" aria-label="Thêm sự kiện" onClick={() => openCreate('event')}><Plus size={17}/><span>Thêm sự kiện</span></button></div>
           <div className="event-list">{data.events.length ? data.events.map((event,index) => <article className={`event-row ${index === 0 ? 'event-row-featured' : ''}`} key={event.id}>
             <div className="event-datebox"><span>{new Intl.DateTimeFormat('vi-VN',{month:'short'}).format(new Date(event.starts_at)).replace('.','')}</span><strong>{new Date(event.starts_at).getDate()}</strong></div><div className="event-copy"><h3><button type="button" className="event-edit" aria-label={`Sửa sự kiện: ${event.title}`} onClick={()=>openEdit('event',event)}>{event.title}</button></h3><p><span className="event-meta-item"><Clock3 size={13}/>{prettyDate(event.starts_at)}</span><span className="event-meta-item"><MapPin size={13}/>{event.location || 'Chưa có địa điểm'}</span></p></div><button className="row-delete" aria-label="Xóa sự kiện" onClick={()=>void deleteItem('event',event)}><Trash2 size={15}/></button><ChevronRight className="row-chevron" size={17}/>

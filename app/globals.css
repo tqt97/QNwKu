@@ -75,6 +75,8 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .side-intro h1,.mobile-welcome h1,.hero-card h2,.section-heading h2,.modal-heading h2,.event-copy h3,.place-details h3{font-family:var(--font-heading)}
 .brand small{font-family:var(--font-body)}
 .side-note{color:var(--text-secondary)}
+.text-button.scroll-down{width:44px;min-width:44px;padding:0;justify-content:center}
+@media(max-width:760px){.add-button span{display:none}}
 .icon-button{width:44px;height:44px}
 .checkbox{position:relative;width:44px;height:44px;border:0;background:transparent}
 .checkbox::before{content:"";position:absolute;width:20px;height:20px;border:1px solid #e6cad5;border-radius:6px;background:#fff}
