@@ -72,6 +72,8 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .hero-card h2{font-size:var(--type-display)}
 .modal-heading h2{font-size:var(--type-dialog)}
 .event-copy h3,.place-details h3{font-size:var(--type-h3)}
+.side-intro h1,.mobile-welcome h1,.hero-card h2,.section-heading h2,.modal-heading h2,.event-copy h3,.place-details h3{font-family:var(--font-heading)}
+.brand small{font-family:var(--font-body)}
 
 /* Keep the soft palette while giving secondary copy enough contrast to read. */
 .brand small,.topbar-note,.intro-copy,.hero-date,.time-unit span,.hero-bottom,.section-heading .eyebrow,.event-datebox,.event-copy p,.progress-label,.place-area,.footer-note{color:#765f6c}
