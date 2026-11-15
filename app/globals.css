@@ -120,6 +120,9 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .event-row:nth-child(2n) .event-datebox{background:#eee7f7}
 .progress-track span{background:linear-gradient(90deg,#e986a6,#c99acb)}
 .checkbox.checked::before{background:#d77d9c;border-color:#d77d9c}
+.topbar-note svg{color:#c75e81;transform-origin:center;animation:topbar-twinkle 2.4s ease-in-out infinite}
+@keyframes topbar-twinkle{0%,100%{transform:rotate(-8deg) scale(.92);opacity:.78;filter:drop-shadow(0 0 0 rgba(199,94,129,0))}50%{transform:rotate(8deg) scale(1.16);opacity:1;filter:drop-shadow(0 0 5px rgba(199,94,129,.55))}}
+@media(prefers-reduced-motion:reduce){.topbar-note svg{animation:none}}
 .add-picker-backdrop{align-items:end;padding:16px 16px max(16px,env(safe-area-inset-bottom))}
 .add-picker{width:min(100%,460px);max-height:none;overflow:visible}
 .add-picker-options{display:grid;gap:var(--space-2)}

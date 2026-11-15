@@ -83,6 +83,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Các nút icon, checkbox, xóa và CTA có vùng chạm tối thiểu 44×44px mà vẫn giữ icon nhỏ gọn.
 - Mobile bỏ khối chào lặp lại và chỉ giữ nút cộng dạng icon ở đầu danh sách; tagline chuyển thành “Lên kèo đi chơi thôi ♡”.
 - Bỏ eyebrow tiếng Anh “A LITTLE PLACE FOR US” để phần giới thiệu gọn hơn.
+- Icon lấp lánh trên topbar có animation nhẹ và tắt khi thiết bị bật reduced motion.
 - Hero dùng mũi tên xuống có nhãn truy cập để cuộn tới danh sách dịp sắp tới.
 - Metadata sự kiện giữ giờ và địa điểm trên một dòng; nếu thiếu chỗ, phần địa điểm rút gọn bằng dấu ba chấm.
 - Tên sự kiện là nút sửa có accessible name, thao tác được bằng Tab/Enter; nút xóa là điều khiển riêng.

@@ -33,6 +33,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Tự đóng menu món/quán khi chạm bên ngoài hoặc nhấn Escape.
 - Đổi thao tác mỗi lịch hẹn sang menu dấu ba chấm, gom giờ/địa điểm thành một dòng và cố định ô tháng/ngày.
 - Tăng sắc độ hồng/lavender nhẹ trên hero, ô ngày, checkbox và điểm nhấn để pastel rõ hơn.
+- Thêm hiệu ứng lấp lánh nhẹ cho icon topbar, có hỗ trợ reduced motion.
 - Đơn giản hóa mục lưu món/quán thành danh sách text có checkbox đã thử, giữ nguyên dữ liệu chi tiết cũ trong schema.
 - Đổi nút dưới cùng thành “Thêm mới” với bộ chọn loại nội dung trước khi mở form.
 
