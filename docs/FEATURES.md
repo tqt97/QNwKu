@@ -50,6 +50,7 @@ Lưu quán ăn, quán nước, món muốn thử và link chỉ đường.
 ### Hành vi
 
 - Trang chủ hiển thị một số địa điểm đầu; tab địa điểm xem danh sách.
+- Heading của khu vực địa điểm là “Chỗ xinh mình muốn ghé” ở cả trang chủ và tab địa điểm. Khi danh sách trống, lời nhắc trải hết chiều rộng lưới card.
 - Từ card có thể chỉnh sửa, xóa hoặc mở Google Maps ở tab mới.
 - Có thể gắn địa điểm vào một sự kiện. Xóa sự kiện sẽ bỏ liên kết nhưng giữ địa điểm.
 

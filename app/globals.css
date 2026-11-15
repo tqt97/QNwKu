@@ -10,6 +10,7 @@
 @media(max-width:370px){.layout{padding-left:12px;padding-right:12px}.hero-card{padding-left:14px;padding-right:14px}.hero-bottom{font-size:8px}.text-button{font-size:9px}.event-copy p{max-width:208px}.place-actions{gap:4px}.map-link,.small-edit{font-size:8px}}
 
 @media(max-width:680px){.event-datebox{width:43px}.event-datebox span{font-size:7px;letter-spacing:0;white-space:nowrap}}
+.place-grid>.empty-state{grid-column:1 / -1}
 
 /* Keep the soft palette while giving secondary copy enough contrast to read. */
 .brand small,.topbar-note,.intro-copy,.hero-date,.time-unit span,.hero-bottom,.section-heading .eyebrow,.event-datebox,.event-copy p,.progress-label,.place-area,.footer-note{color:#765f6c}
