@@ -81,6 +81,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Nút thêm ở đầu mỗi danh sách có accessible name; nhãn hiển thị cạnh biểu tượng trên mobile khi đủ chỗ và thu gọn ở màn hình rất hẹp.
 - Thao tác sửa/xóa địa điểm nằm trong menu mở bằng nút ba chấm luôn hiển thị; nút và liên kết có focus ring rõ khi dùng bàn phím.
 - Nút mở menu địa điểm có vùng chạm tối thiểu 44px; input form trên mobile giữ cỡ 16px để tránh tự phóng to khi focus trên iOS.
+- Các nút icon, checkbox, xóa và CTA có vùng chạm tối thiểu 44px mà vẫn giữ icon nhỏ gọn.
 - Metadata sự kiện tách giờ và địa điểm thành hai mục; trên mobile hiển thị thành hai dòng để tránh cắt mất địa điểm.
 - Màu chính: nền hồng kem `#fffafb`, hồng dâu, lavender, mint; chữ nâu tím.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.

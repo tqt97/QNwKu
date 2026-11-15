@@ -23,6 +23,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Đưa cỡ heading trang, hero, khối, card và modal vào một scale responsive dùng token chung.
 - Áp dụng cùng font serif hệ thống cho toàn bộ heading để giữ kiểu chữ đồng bộ khi không tải font ngoài.
 - Tăng tương phản cho trích dẫn ở phần giới thiệu.
+- Mở rộng vùng chạm cho nút sửa, xóa, checkbox và CTA lên tối thiểu 44px.
 
 ## [1.0.0] - 2026-11-15
 
