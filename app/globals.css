@@ -11,6 +11,11 @@
 
 @media(max-width:680px){.event-datebox{width:43px}.event-datebox span{font-size:7px;letter-spacing:0;white-space:nowrap}}
 .place-grid>.empty-state{grid-column:1 / -1}
+html{scrollbar-width:thin;scrollbar-color:#d9bdc8 transparent}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#d9bdc8;border:2px solid transparent;border-radius:999px;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background-color:#bd91a3}
 
 /* Keep the soft palette while giving secondary copy enough contrast to read. */
 .brand small,.topbar-note,.intro-copy,.hero-date,.time-unit span,.hero-bottom,.section-heading .eyebrow,.event-datebox,.event-copy p,.progress-label,.place-area,.footer-note{color:#765f6c}

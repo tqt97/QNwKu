@@ -11,6 +11,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Giữ tên tháng trên cùng một dòng trong ô ngày ở giao diện mobile.
 - Khởi tạo countdown bằng thời điểm cố định khi SSR và đồng bộ đồng hồ sau khi mount để tránh hydration mismatch.
 - Đồng bộ heading địa điểm thành “Chỗ xinh mình muốn ghé” và cho empty state trải hết chiều rộng lưới.
+- Làm thanh cuộn mảnh và nhẹ hơn trên trình duyệt hỗ trợ tùy chỉnh scrollbar.
 
 ## [1.0.0] - 2026-11-15
 

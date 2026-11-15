@@ -79,6 +79,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Mobile: nội dung một cột, thanh điều hướng cố định dưới màn hình, card địa điểm hai cột.
 - Màu chính: nền hồng kem `#fffafb`, hồng dâu, lavender, mint; chữ nâu tím.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.
+- Thanh cuộn dùng kiểu mảnh, màu hồng xám nhẹ trên trình duyệt hỗ trợ tùy chỉnh.
 
 ## Quy tắc nghiệp vụ và giới hạn
 
