@@ -17,7 +17,10 @@ Trang server tải dữ liệu ban đầu qua Supabase và truyền một snapsh
 ## Các thành phần
 
 - `app/page.tsx`: tải dữ liệu; trả danh sách rỗng cùng lỗi nếu Supabase không truy cập được.
-- `app/planner.tsx`: countdown, điều hướng, form và state CRUD.
+- `app/planner.tsx`: điều phối state CRUD, điều hướng và form; các hàng sự kiện, món/quán và checklist tách thành component trong `app/components/`.
+- `app/components/HeroCard.tsx`: quản lý nhịp cập nhật countdown riêng mỗi giây để không render lại toàn trang theo đồng hồ.
+- `app/components/EventRow.tsx`, `PlaceRow.tsx`, `ChecklistRow.tsx`: render từng hàng và nhận callback thao tác từ Planner.
+- `lib/dates.ts`: timezone ứng dụng, chuyển đổi input datetime-local và định dạng SSR/client thống nhất.
 - `app/api/[table]/route.ts`: POST/PATCH/DELETE; chỉ chấp nhận `events`, `places`, `checklist_items`.
 - `lib/supabase.ts`: tạo client server-side từ URL và anon key.
 - `lib/data.ts`: đọc ba bảng hoặc trả demo nếu thiếu env.
@@ -77,6 +80,10 @@ API trả JSON cho kết quả/error; DELETE thành công trả 204. Không có 
 - Checklist cập nhật lạc quan và hoàn tác khi request thất bại.
 - Lỗi Supabase khi tải hiển thị ở đầu trang; lỗi thao tác hiển thị toast.
 - Dữ liệu demo dùng ID giả định danh `demo-*`; không ghi đè dữ liệu Supabase.
+
+## Phân trang và quy mô dữ liệu
+
+Hiện ba bảng được tải cùng lúc vì đây là planner cá nhân dự kiến có ít bản ghi; chưa có phân trang server-side. Không nên chỉ cắt danh sách ở client vì như vậy vẫn tải toàn bộ dữ liệu và làm sai tiến độ checklist. Khi một bảng vượt khoảng 100 bản ghi hoặc thời gian/khối lượng tải SSR bắt đầu ảnh hưởng rõ, bổ sung cursor/range pagination ở Supabase và API, đồng thời giữ riêng truy vấn lịch tương lai, lịch cũ và checklist theo sự kiện. Chưa bật phân trang trong bản này vì dữ liệu hiện tại không có dấu hiệu vượt ngưỡng và cần giữ đầy đủ checklist/progress trong luồng hiện tại.
 
 ## Mở rộng dự kiến
 

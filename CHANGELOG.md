@@ -10,6 +10,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Cảnh báo số việc chuẩn bị sẽ bị xóa cùng lịch hẹn; xử lý lỗi mạng khi xóa bằng thông báo trong giao diện.
 - Chuẩn hóa ngày giờ theo múi giờ Việt Nam và dùng snapshot thời gian SSR chung cho countdown để tránh hydration mismatch và số đếm sai lúc tải đầu.
 - Trang chủ chỉ liệt kê lịch tương lai theo thứ tự gần trước; tab Sự kiện giữ toàn bộ lịch theo thời gian. Dialog hỗ trợ Escape, giữ Tab trong modal, trả focus về nút mở và có heading cấp một trên mobile.
+- Tách HeroCard, EventRow, PlaceRow và ChecklistRow thành component riêng; cập nhật countdown độc lập mỗi giây, định dạng/dọn CSS và bỏ selector cũ của giao diện card địa điểm.
 - Đổi tên hiển thị của website thành “KU ơi, mình đi đâu thế”.
 - Tăng độ đậm của chữ phụ để dễ đọc hơn trên nền pastel.
 - Giữ tên tháng trên cùng một dòng trong ô ngày ở giao diện mobile.

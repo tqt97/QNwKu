@@ -2,20 +2,19 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, Plus, Sparkles, Trash2, X } from 'lucide-react';
+import { CalendarDays, Check, ChevronRight, Coffee, Heart, MapPin, Plus, Sparkles, X } from 'lucide-react';
 import type { AppData, ChecklistItem, EventItem, Place } from '@/lib/types';
-import { dateToLocalInput, formatAppDateTime, formatAppDay, formatAppMonth, formatAppTime, localInputToISO } from '@/lib/dates';
+import { dateToLocalInput, localInputToISO } from '@/lib/dates';
+import EventRow from './components/EventRow';
+import PlaceRow from './components/PlaceRow';
+import ChecklistRow from './components/ChecklistRow';
+import HeroCard from './components/HeroCard';
 
 type FormKind = 'event' | 'place' | 'check' | null;
 const tableFor = { event: 'events', place: 'places', check: 'checklist_items' } as const;
 const blankEvent = { title: '', starts_at: '', location: '', note: '' };
 const blankPlace = { name: '', category: 'Ăn uống', area: '', dish: '', map_url: '', event_id: '' };
 const blankCheck = { title: '', event_id: '' };
-
-function countdown(date: string, now: number) {
-  const seconds = Math.max(0, Math.floor((new Date(date).getTime() - now) / 1000));
-  return { days: Math.floor(seconds / 86400), hours: Math.floor((seconds % 86400) / 3600), minutes: Math.floor((seconds % 3600) / 60), seconds: seconds % 60, passed: new Date(date).getTime() < now };
-}
 
 function handleDialogKeyboard(event: ReactKeyboardEvent<HTMLElement>, close: () => void) {
   if (event.key === 'Escape') { event.preventDefault(); close(); return; }
@@ -43,7 +42,7 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
   const [showAddPicker, setShowAddPicker] = useState(false);
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
+  useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 30_000); return () => clearInterval(timer); }, []);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 3000); return () => clearTimeout(timer); }, [toast]);
   useEffect(() => {
     if (kind || showAddPicker || !returnFocusRef.current) return;
@@ -74,7 +73,6 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
 
   const upcoming = useMemo(() => data.events.filter(e => new Date(e.starts_at).getTime() >= now).sort((a,b) => +new Date(a.starts_at) - +new Date(b.starts_at)), [data.events, now]);
   const featured = upcoming[0] ?? [...data.events].sort((a,b) => +new Date(b.starts_at) - +new Date(a.starts_at))[0];
-  const clock = featured ? countdown(featured.starts_at, now) : null;
   const visibleEvents = useMemo(() => {
     const sorted = [...data.events].sort((a,b) => +new Date(a.starts_at) - +new Date(b.starts_at));
     return tab === 'home' ? sorted.filter(event => new Date(event.starts_at).getTime() >= now) : sorted;
@@ -194,35 +192,24 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
       <section className="content">
         <div className="mobile-welcome"><h1>Những ngày mình mong chờ</h1></div>
         {connectionError && <div className="connection-warning">Chưa đọc được dữ liệu Supabase: {connectionError}</div>}
-        {tab !== 'places' && <section className="hero-card">
-          <div className="hero-sparkle sparkle-one">✦</div><div className="hero-sparkle sparkle-two">✧</div>
-          <div className="hero-top"><span className="pill"><Heart size={13} fill="currentColor"/> {featured ? 'NGÀY TỤI MÌNH GẶP NHAU' : 'THÊM MỘT KHOẢNH KHẮC'}</span><button className="icon-button hero-edit" aria-label="Sửa sự kiện" onClick={() => featured ? openEdit('event', featured) : openCreate('event')}><CalendarDays size={17}/></button></div>
-          {featured ? <><h2>{featured.title}</h2><p className="hero-date"><CalendarDays size={15}/>{formatAppDateTime(featured.starts_at)}<span className="dot">·</span><MapPin size={15}/>{featured.location || 'Chưa chọn địa điểm'}</p>
-            <div className="countdown" aria-label="Thời gian đếm ngược">{clock?.passed ? <div className="today-message">Hẹn hò đang diễn ra đó! Tận hưởng từng phút bên nhau nha ♡</div> : <>{[[clock?.days ?? 0,'ngày'],[clock?.hours ?? 0,'giờ'],[clock?.minutes ?? 0,'phút'],[clock?.seconds ?? 0,'giây']].map(([n,label]) => <div className="time-unit" key={String(label)}><strong>{String(n).padStart(2,'0')}</strong><span>{label}</span></div>)}</>}</div>
-            <div className="hero-bottom"><span>đếm từng chút một để gặp cậu <span className="heart-pulse">♥</span></span><button type="button" className="text-button scroll-down" aria-label="Cuộn xuống những dịp sắp tới" onClick={()=>document.getElementById('upcoming-events')?.scrollIntoView({behavior:'smooth',block:'start'})}><ChevronDown size={20}/></button></div>
-          </> : <><h2>Ngày gặp nhau<br/>đang chờ được lên lịch</h2><p className="hero-date">Tạo một sự kiện để bắt đầu đếm ngược ♡</p><button className="primary-button" onClick={() => openCreate('event')}><Plus size={17}/>Tạo sự kiện đầu tiên</button></>}
-        </section>}
+        {tab !== 'places' && <HeroCard featured={featured} initialNow={initialNow} onEdit={()=>featured ? openEdit('event',featured) : openCreate('event')} onScrollToEvents={()=>document.getElementById('upcoming-events')?.scrollIntoView({behavior:'smooth',block:'start'})} />}
 
         {(tab === 'home' || tab === 'events') && <section className="section-block" id="upcoming-events">
           <div className="section-heading"><div><p className="eyebrow">LỊCH HẸN DỄ THƯƠNG</p><h2>{tab === 'events' ? 'Tất cả sự kiện' : 'Những dịp sắp tới'}</h2></div><button className="add-button" aria-label="Thêm sự kiện" onClick={() => openCreate('event')}><Plus size={17}/><span>Thêm sự kiện</span></button></div>
-          <div className="event-list">{visibleEvents.length ? visibleEvents.map((event,index) => <article className={`event-row ${index === 0 ? 'event-row-featured' : ''}`} key={event.id}>
-            <div className="event-datebox"><span>{formatAppMonth(event.starts_at)}</span><strong>{formatAppDay(event.starts_at)}</strong></div><div className="event-copy"><h3>{event.title}</h3><p><span className="event-meta-item"><Clock3 size={13}/>{formatAppTime(event.starts_at)}</span><span className="event-meta-item"><MapPin size={13}/>{event.location || 'Chưa có địa điểm'}</span></p></div><div className="event-actions-root" data-actions-root><button type="button" className="event-more" data-actions-root aria-label={`Thao tác với ${event.title}`} aria-expanded={openEventActions===event.id} aria-controls={`event-actions-${event.id}`} onClick={()=>{setOpenPlaceActions(null);setOpenEventActions(current=>current===event.id?null:event.id)}}>···</button><div className="place-actions-menu event-actions-menu" data-actions-root id={`event-actions-${event.id}`} hidden={openEventActions!==event.id}><button type="button" onClick={()=>{setOpenEventActions(null);openEdit('event',event)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenEventActions(null);void deleteItem('event',event)}}>Xóa mục</button></div></div>
-          </article>) : <p className="empty-state">{tab === 'home' && data.events.length ? 'Chưa có lịch hẹn sắp tới. Mình lên kèo mới nha ♡' : 'Chưa có lịch hẹn nào. Mình tạo chiếc đầu tiên nha ♡'}</p>}</div>
+          <div className="event-list">{visibleEvents.length ? visibleEvents.map((event,index) => <EventRow key={event.id} event={event} featured={index === 0} actionsOpen={openEventActions === event.id} onToggleActions={()=>{setOpenPlaceActions(null);setOpenEventActions(current=>current===event.id?null:event.id)}} onEdit={()=>{setOpenEventActions(null);openEdit('event',event)}} onDelete={()=>{setOpenEventActions(null);void deleteItem('event',event)}} />) : <p className="empty-state">{tab === 'home' && data.events.length ? 'Chưa có lịch hẹn sắp tới. Mình lên kèo mới nha ♡' : 'Chưa có lịch hẹn nào. Mình tạo chiếc đầu tiên nha ♡'}</p>}</div>
         </section>}
 
 
         {(tab === 'home' || tab === 'places') && <section className="section-block places-section">
           <div className="section-heading"><div><p className="eyebrow">MÓN NGON, QUÁN XINH MÌNH MUỐN THỬ</p><h2>Chỗ xinh mình muốn ghé</h2></div><button className="add-button" aria-label="Thêm món hoặc quán muốn thử" onClick={()=>openCreate('place')}><Plus size={17}/><span>Thêm mới</span></button></div>
-          <div className="place-list">{visiblePlaces.length ? visiblePlaces.map(place=><article className="place-row" key={place.id}>
-            <button className={`checkbox ${place.visited?'checked':''}`} aria-label={place.visited?`Bỏ đánh dấu đã thử ${place.name}`:`Đánh dấu đã thử ${place.name}`} onClick={()=>void togglePlaceVisited(place)}>{place.visited&&<Check size={14}/>}</button><span className={`place-note-title ${place.visited?'is-done':''}`}>{place.name}</span><button type="button" className="place-more" data-actions-root aria-label={`Thao tác với ${place.name}`} aria-expanded={openPlaceActions===place.id} aria-controls={`place-actions-${place.id}`} onClick={()=>{setOpenEventActions(null);setOpenPlaceActions(current=>current===place.id?null:place.id)}}>···</button><div className="place-actions-menu" data-actions-root id={`place-actions-${place.id}`} hidden={openPlaceActions!==place.id}><button type="button" onClick={()=>{setOpenPlaceActions(null);openEdit('place',place)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}}>Xóa mục</button></div>
-          </article>) : <p className="empty-state">Chưa lưu món hay quán nào. Thấy gì hay thì ghi lại ở đây nha ♡</p>}</div>
+          <div className="place-list">{visiblePlaces.length ? visiblePlaces.map(place=><PlaceRow key={place.id} place={place} actionsOpen={openPlaceActions===place.id} onToggleVisited={()=>void togglePlaceVisited(place)} onToggleActions={()=>{setOpenEventActions(null);setOpenPlaceActions(current=>current===place.id?null:place.id)}} onEdit={()=>{setOpenPlaceActions(null);openEdit('place',place)}} onDelete={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}} />) : <p className="empty-state">Chưa lưu món hay quán nào. Thấy gì hay thì ghi lại ở đây nha ♡</p>}</div>
           {tab==='home'&&data.places.length>3&&<button className="see-all" onClick={()=>setTab('places')}>Xem tất cả địa điểm <ChevronRight size={15}/></button>}
         </section>}
 
         {(tab === 'home' || tab === 'events') && <section className="section-block checklist-section">
           <div className="section-heading"><div><p className="eyebrow">CHUẨN BỊ MỘT CHÚT</p><h2>Đừng quên mang theo</h2></div><span className="progress-label">{doneCount}/{activeChecklist.length} xong</span></div>
           <div className="checklist-card"><div className="progress-track"><span style={{width:`${activeChecklist.length ? doneCount / activeChecklist.length * 100 : 0}%`}}/></div>
-            {activeChecklist.length ? activeChecklist.map(item=><div className="check-row" key={item.id}><button className={`checkbox ${item.done?'checked':''}`} aria-label={item.done?'Bỏ đánh dấu':'Đánh dấu hoàn thành'} aria-busy={pendingCheckIds.has(item.id)} disabled={pendingCheckIds.has(item.id)} onClick={()=>void toggleCheck(item)}>{item.done&&<Check size={14}/>}</button><button className={`check-title ${item.done?'is-done':''}`} onClick={()=>openEdit('check',item)}>{item.title}</button>{eventName(item.event_id)&&<span className="check-event">{eventName(item.event_id)}</span>}<button className="mini-delete" aria-label="Xóa checklist" onClick={()=>void deleteItem('check',item)}><X size={15}/></button></div>) : <p className="empty-state">Chưa có gì cần chuẩn bị. Có thể thêm ngay nè!</p>}
+            {activeChecklist.length ? activeChecklist.map(item=><ChecklistRow key={item.id} item={item} eventLabel={eventName(item.event_id)} pending={pendingCheckIds.has(item.id)} onToggle={()=>void toggleCheck(item)} onEdit={()=>openEdit('check',item)} onDelete={()=>void deleteItem('check',item)} />) : <p className="empty-state">Chưa có gì cần chuẩn bị. Có thể thêm ngay nè!</p>}
             <button className="add-check" onClick={()=>openCreate('check',featured?.id)}><Plus size={15}/> Thêm một việc cần chuẩn bị</button>
           </div>
         </section>}
