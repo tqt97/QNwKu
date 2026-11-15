@@ -31,6 +31,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Đổi tagline thành “Lên kèo đi chơi thôi ♡”.
 - Bỏ dòng eyebrow tiếng Anh lặp ở phần giới thiệu.
 - Tự đóng menu món/quán khi chạm bên ngoài hoặc nhấn Escape.
+- Đổi thao tác mỗi lịch hẹn sang menu dấu ba chấm, gom giờ/địa điểm thành một dòng và cố định ô tháng/ngày.
 - Đơn giản hóa mục lưu món/quán thành danh sách text có checkbox đã thử, giữ nguyên dữ liệu chi tiết cũ trong schema.
 - Đổi nút dưới cùng thành “Thêm mới” với bộ chọn loại nội dung trước khi mở form.
 

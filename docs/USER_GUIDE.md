@@ -2,7 +2,7 @@
 
 ## Trang chủ
 
-Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa. Phần “Những dịp sắp tới” liệt kê sự kiện; nhấn tên sự kiện để sửa, dùng nút xóa riêng để xóa.
+Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa; mũi tên phía dưới cuộn tới lịch. Phần “Những dịp sắp tới” liệt kê sự kiện; mở dấu ba chấm ở từng hàng để sửa hoặc xóa.
 
 ## Thêm mới trên điện thoại
 

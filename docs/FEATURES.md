@@ -28,6 +28,7 @@ Giúp người dùng thấy ngay sự kiện gần nhất và thời gian còn l
 
 - Trang chủ chọn sự kiện có `starts_at` gần nhất nhưng chưa qua.
 - Bộ đếm hiển thị ngày, giờ, phút và giây.
+- Hàng sự kiện giữ tháng/ngày trong ô vuông cố định, hiển thị giờ và địa điểm gọn một dòng; menu dấu ba chấm mở thao tác sửa/xóa.
 - Nếu không còn sự kiện trong tương lai, hiển thị sự kiện gần nhất đã qua; khi không có sự kiện, hiển thị lời mời tạo lịch hẹn.
 - CRUD sự kiện qua modal. Xóa sự kiện đặt quan hệ địa điểm thành `null` và xóa checklist thuộc sự kiện bằng foreign key cascade.
 
@@ -77,13 +78,13 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Ở màn hình rộng đến 760px, giao diện chuyển sang một cột để tránh sidebar làm chật vùng nội dung; hero cho phép nút hành động xuống dòng trên màn hình rất hẹp.
 - Nút dưới cùng luôn là “Thêm mới”, mở bộ chọn Sự kiện / Chuẩn bị / Lưu lại rồi mới mở form tương ứng.
 - Nút thêm ở đầu mỗi danh sách có accessible name; nhãn hiển thị cạnh biểu tượng trên mobile khi đủ chỗ và thu gọn ở màn hình rất hẹp.
-- Thao tác sửa/xóa địa điểm nằm trong menu mở bằng nút ba chấm luôn hiển thị; nút và liên kết có focus ring rõ khi dùng bàn phím.
+- Thao tác sửa/xóa món/quán và sự kiện nằm trong menu dấu ba chấm; menu tự đóng khi chạm ngoài hoặc nhấn Escape.
 - Nút mở menu địa điểm có vùng chạm tối thiểu 44px; input form trên mobile giữ cỡ 16px để tránh tự phóng to khi focus trên iOS.
 - Các nút icon, checkbox, xóa và CTA có vùng chạm tối thiểu 44×44px mà vẫn giữ icon nhỏ gọn.
 - Mobile bỏ khối chào lặp lại và chỉ giữ nút cộng dạng icon ở đầu danh sách; tagline chuyển thành “Lên kèo đi chơi thôi ♡”.
 - Bỏ eyebrow tiếng Anh “A LITTLE PLACE FOR US” để phần giới thiệu gọn hơn.
 - Hero dùng mũi tên xuống có nhãn truy cập để cuộn tới danh sách dịp sắp tới.
-- Metadata sự kiện tách giờ và địa điểm thành hai mục; trên mobile hiển thị thành hai dòng để tránh cắt mất địa điểm.
+- Metadata sự kiện giữ giờ và địa điểm trên một dòng; nếu thiếu chỗ, phần địa điểm rút gọn bằng dấu ba chấm.
 - Tên sự kiện là nút sửa có accessible name, thao tác được bằng Tab/Enter; nút xóa là điều khiển riêng.
 - Màu chính: nền hồng kem `#fffafb`, hồng dâu, lavender, mint; chữ nâu tím.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, Plus, Sparkles, Trash2, X } from 'lucide-react';
+import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, MoreHorizontal, Plus, Sparkles, Trash2, X } from 'lucide-react';
 import type { AppData, ChecklistItem, EventItem, Place } from '@/lib/types';
 
 type FormKind = 'event' | 'place' | 'check' | null;
@@ -16,6 +16,7 @@ function asLocalInput(date: string) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 function prettyDate(date: string) { return new Intl.DateTimeFormat('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(new Date(date)); }
+function prettyTime(date: string) { return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' }).format(new Date(date)); }
 function countdown(date: string, now: number) {
   const seconds = Math.max(0, Math.floor((new Date(date).getTime() - now) / 1000));
   return { days: Math.floor(seconds / 86400), hours: Math.floor((seconds % 86400) / 3600), minutes: Math.floor((seconds % 3600) / 60), seconds: seconds % 60, passed: new Date(date).getTime() < now };
@@ -31,23 +32,32 @@ export default function Planner({ initialData, connectionError }: { initialData:
   const [toast, setToast] = useState('');
   const [tab, setTab] = useState<'home' | 'events' | 'places'>('home');
   const [openPlaceActions, setOpenPlaceActions] = useState<string | null>(null);
+  const [openEventActions, setOpenEventActions] = useState<string | null>(null);
   const [showAddPicker, setShowAddPicker] = useState(false);
 
   useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 3000); return () => clearTimeout(timer); }, [toast]);
   useEffect(() => {
-    if (!openPlaceActions) return;
+    if (!openPlaceActions && !openEventActions) return;
     const closeOnOutsidePress = (event: PointerEvent) => {
-      if (!(event.target instanceof Element) || !event.target.closest('[data-actions-root]')) setOpenPlaceActions(null);
+      if (!(event.target instanceof Element) || !event.target.closest('[data-actions-root]')) {
+        setOpenPlaceActions(null);
+        setOpenEventActions(null);
+      }
     };
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpenPlaceActions(null); };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenPlaceActions(null);
+        setOpenEventActions(null);
+      }
+    };
     document.addEventListener('pointerdown', closeOnOutsidePress);
     document.addEventListener('keydown', closeOnEscape);
     return () => {
       document.removeEventListener('pointerdown', closeOnOutsidePress);
       document.removeEventListener('keydown', closeOnEscape);
     };
-  }, [openPlaceActions]);
+  }, [openPlaceActions, openEventActions]);
 
   const upcoming = useMemo(() => data.events.filter(e => new Date(e.starts_at).getTime() >= now).sort((a,b) => +new Date(a.starts_at) - +new Date(b.starts_at)), [data.events, now]);
   const featured = upcoming[0] ?? [...data.events].sort((a,b) => +new Date(b.starts_at) - +new Date(a.starts_at))[0];
@@ -148,7 +158,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
         {(tab === 'home' || tab === 'events') && <section className="section-block" id="upcoming-events">
           <div className="section-heading"><div><p className="eyebrow">LỊCH HẸN DỄ THƯƠNG</p><h2>{tab === 'events' ? 'Tất cả sự kiện' : 'Những dịp sắp tới'}</h2></div><button className="add-button" aria-label="Thêm sự kiện" onClick={() => openCreate('event')}><Plus size={17}/><span>Thêm sự kiện</span></button></div>
           <div className="event-list">{data.events.length ? data.events.map((event,index) => <article className={`event-row ${index === 0 ? 'event-row-featured' : ''}`} key={event.id}>
-            <div className="event-datebox"><span>{new Intl.DateTimeFormat('vi-VN',{month:'short'}).format(new Date(event.starts_at)).replace('.','')}</span><strong>{new Date(event.starts_at).getDate()}</strong></div><div className="event-copy"><h3><button type="button" className="event-edit" aria-label={`Sửa sự kiện: ${event.title}`} onClick={()=>openEdit('event',event)}>{event.title}</button></h3><p><span className="event-meta-item"><Clock3 size={13}/>{prettyDate(event.starts_at)}</span><span className="event-meta-item"><MapPin size={13}/>{event.location || 'Chưa có địa điểm'}</span></p></div><button className="row-delete" aria-label="Xóa sự kiện" onClick={()=>void deleteItem('event',event)}><Trash2 size={15}/></button><ChevronRight className="row-chevron" size={17}/>
+            <div className="event-datebox"><span>{new Intl.DateTimeFormat('vi-VN',{month:'short'}).format(new Date(event.starts_at)).replace('.','')}</span><strong>{new Date(event.starts_at).getDate()}</strong></div><div className="event-copy"><h3>{event.title}</h3><p><span className="event-meta-item"><Clock3 size={13}/>{prettyTime(event.starts_at)}</span><span className="event-meta-item"><MapPin size={13}/>{event.location || 'Chưa có địa điểm'}</span></p></div><div className="event-actions-root" data-actions-root><button type="button" className="event-more" data-actions-root aria-label={`Thao tác với ${event.title}`} aria-expanded={openEventActions===event.id} aria-controls={`event-actions-${event.id}`} onClick={()=>{setOpenPlaceActions(null);setOpenEventActions(current=>current===event.id?null:event.id)}}><MoreHorizontal size={19}/></button><div className="event-actions-menu" data-actions-root id={`event-actions-${event.id}`} hidden={openEventActions!==event.id}><button type="button" onClick={()=>{setOpenEventActions(null);openEdit('event',event)}}>Sửa</button><button type="button" onClick={()=>{setOpenEventActions(null);void deleteItem('event',event)}}>Xóa</button></div></div>
           </article>) : <p className="empty-state">Chưa có lịch hẹn nào. Mình tạo chiếc đầu tiên nha ♡</p>}</div>
         </section>}
 
@@ -163,7 +173,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
         {(tab === 'home' || tab === 'places') && <section className="section-block places-section">
           <div className="section-heading"><div><p className="eyebrow">MÓN NGON, QUÁN XINH MÌNH MUỐN THỬ</p><h2>Chỗ xinh mình muốn ghé</h2></div><button className="add-button" aria-label="Thêm món hoặc quán muốn thử" onClick={()=>openCreate('place')}><Plus size={17}/><span>Thêm mới</span></button></div>
           <div className="place-list">{visiblePlaces.length ? visiblePlaces.map(place=><article className="place-row" key={place.id}>
-            <button className={`checkbox ${place.visited?'checked':''}`} aria-label={place.visited?`Bỏ đánh dấu đã thử ${place.name}`:`Đánh dấu đã thử ${place.name}`} onClick={()=>void togglePlaceVisited(place)}>{place.visited&&<Check size={14}/>}</button><span className={`place-note-title ${place.visited?'is-done':''}`}>{place.name}</span><button type="button" className="place-more" data-actions-root aria-label={`Thao tác với ${place.name}`} aria-expanded={openPlaceActions===place.id} aria-controls={`place-actions-${place.id}`} onClick={()=>setOpenPlaceActions(current=>current===place.id?null:place.id)}>···</button><div className="place-actions-menu" data-actions-root id={`place-actions-${place.id}`} hidden={openPlaceActions!==place.id}><button type="button" onClick={()=>{setOpenPlaceActions(null);openEdit('place',place)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}}>Xóa mục</button></div>
+            <button className={`checkbox ${place.visited?'checked':''}`} aria-label={place.visited?`Bỏ đánh dấu đã thử ${place.name}`:`Đánh dấu đã thử ${place.name}`} onClick={()=>void togglePlaceVisited(place)}>{place.visited&&<Check size={14}/>}</button><span className={`place-note-title ${place.visited?'is-done':''}`}>{place.name}</span><button type="button" className="place-more" data-actions-root aria-label={`Thao tác với ${place.name}`} aria-expanded={openPlaceActions===place.id} aria-controls={`place-actions-${place.id}`} onClick={()=>{setOpenEventActions(null);setOpenPlaceActions(current=>current===place.id?null:place.id)}}>···</button><div className="place-actions-menu" data-actions-root id={`place-actions-${place.id}`} hidden={openPlaceActions!==place.id}><button type="button" onClick={()=>{setOpenPlaceActions(null);openEdit('place',place)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}}>Xóa mục</button></div>
           </article>) : <p className="empty-state">Chưa lưu món hay quán nào. Thấy gì hay thì ghi lại ở đây nha ♡</p>}</div>
           {tab==='home'&&data.places.length>3&&<button className="see-all" onClick={()=>setTab('places')}>Xem tất cả địa điểm <ChevronRight size={15}/></button>}
         </section>}
