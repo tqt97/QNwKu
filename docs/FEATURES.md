@@ -81,7 +81,8 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Thao tác sửa/xóa món/quán và sự kiện nằm trong menu dấu ba chấm; menu tự đóng khi chạm ngoài hoặc nhấn Escape.
 - Nút mở menu địa điểm có vùng chạm tối thiểu 44px; input form trên mobile giữ cỡ 16px để tránh tự phóng to khi focus trên iOS.
 - Các nút icon, checkbox, xóa và CTA có vùng chạm tối thiểu 44×44px mà vẫn giữ icon nhỏ gọn.
-- Mobile bỏ khối chào lặp lại và chỉ giữ nút cộng dạng icon ở đầu danh sách; tagline chuyển thành “Lên kèo đi chơi thôi ♡”.
+- Mobile bỏ khối chào lặp lại và chỉ giữ nút cộng dạng icon ở đầu danh sách; topbar chỉ giữ tên web, không hiển thị tagline.
+- Chữ “KU” được tô điểm trong tên thương hiệu; trái tim logo có nhịp đập nhẹ và tắt animation khi bật reduced motion.
 - Bỏ eyebrow tiếng Anh “A LITTLE PLACE FOR US” để phần giới thiệu gọn hơn.
 - Icon lấp lánh trên topbar có animation nhẹ và tắt khi thiết bị bật reduced motion.
 - Hero dùng mũi tên xuống có nhãn truy cập để cuộn tới danh sách dịp sắp tới.

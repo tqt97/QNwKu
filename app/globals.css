@@ -116,6 +116,10 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .event-more{position:absolute;inset:0;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.75);color:#a5788d;font-size:19px;font-weight:700;letter-spacing:1px}
 .event-actions-menu{top:calc(100% - 8px);right:0;display:block;width:min(150px,calc(100vw - 40px));min-width:0;height:auto;min-height:0;padding:4px;transform:none}
 .event-actions-menu button{display:block;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:transparent;text-align:left;color:var(--text-primary);font-size:var(--type-sm)}
+.brand-name{color:#c84f76;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+.brand-heart{animation:brand-heartbeat 1.8s ease-in-out infinite;transform-origin:center}
+@keyframes brand-heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.18)}28%{transform:scale(1)}42%{transform:scale(1.12)}58%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.brand-heart{animation:none}}
 :root{--pink:#df6f93;--pink-deep:#ca4e76;--pink-light:#ffe7ef;--line:#ecd7df}
 .brand-mark,.sticker{background:#ffe4ec}
 .sticker{color:#c9557c}

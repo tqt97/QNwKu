@@ -28,7 +28,8 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Chuyển layout một cột ở breakpoint 760px và cho action cuối hero tự xuống dòng ở màn hình hẹp.
 - Đảm bảo nút thêm dạng chỉ có icon vẫn rộng tối thiểu 44px trên màn hình rất hẹp.
 - Rút gọn nút thêm ở đầu danh sách trên mobile, bỏ lời chào lặp và thêm mũi tên cuộn từ hero.
-- Đổi tagline thành “Lên kèo đi chơi thôi ♡”.
+- Bỏ tagline khỏi topbar để tên web gọn hơn.
+- Tô điểm riêng chữ “KU” trong tên web và thêm nhịp đập nhẹ cho trái tim logo, có hỗ trợ reduced motion.
 - Bỏ dòng eyebrow tiếng Anh lặp ở phần giới thiệu.
 - Tự đóng menu món/quán khi chạm bên ngoài hoặc nhấn Escape.
 - Đổi thao tác mỗi lịch hẹn sang menu dấu ba chấm, gom giờ/địa điểm thành một dòng và cố định ô tháng/ngày.
