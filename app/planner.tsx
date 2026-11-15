@@ -29,6 +29,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
+  const [pendingCheckIds, setPendingCheckIds] = useState<Set<string>>(new Set());
   const [toast, setToast] = useState('');
   const [tab, setTab] = useState<'home' | 'events' | 'places'>('home');
   const [openPlaceActions, setOpenPlaceActions] = useState<string | null>(null);
@@ -73,7 +74,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
       payload.accent = 'pink';
     }
     if (kind === 'place') { payload.name = String(payload.name ?? '').trim(); if (!payload.name) { setToast('Ghi tên món hoặc quán trước nha ♡'); return; } payload.event_id = payload.event_id || null; payload.visited = editing ? form.visited === 'true' : false; }
-    if (kind === 'check') { if (!payload.title) { setToast('Viết một việc cần chuẩn bị nhé ♡'); return; } payload.event_id = payload.event_id || null; payload.done = false; }
+    if (kind === 'check') { if (!String(payload.title ?? '').trim()) { setToast('Viết một việc cần chuẩn bị nhé ♡'); return; } payload.title = String(payload.title).trim(); payload.event_id = payload.event_id || null; payload.done = editing ? form.done === 'true' : false; }
     setBusy(true);
     try {
       const response = await fetch(`/api/${table}`, { method: editing ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(editing ? { id: editing, ...payload } : payload) });
@@ -108,18 +109,39 @@ export default function Planner({ initialData, connectionError }: { initialData:
     setKind(nextKind);
   }
   async function deleteItem(itemKind: Exclude<FormKind, null>, item: EventItem | Place | ChecklistItem) {
-    if (!window.confirm('Xóa mục này khỏi kế hoạch nha?')) return;
-    const response = await fetch(`/api/${tableFor[itemKind]}?id=${encodeURIComponent(item.id)}`, { method: 'DELETE' });
-    if (!response.ok) { const body = await response.json(); setToast(body.error ?? 'Xóa chưa thành công.'); return; }
-    const key = itemKind === 'event' ? 'events' : itemKind === 'place' ? 'places' : 'checklist';
-    setData(current => ({ ...current, [key]: current[key].filter(row => row.id !== item.id) }));
-    setToast('Đã xóa khỏi danh sách.');
+    const relatedChecklistCount = itemKind === 'event' ? data.checklist.filter(row => row.event_id === item.id).length : 0;
+    const confirmation = itemKind === 'event' && relatedChecklistCount
+      ? `Xóa lịch hẹn này và ${relatedChecklistCount} việc chuẩn bị liên quan? Thao tác này không thể hoàn tác.`
+      : 'Xóa mục này khỏi kế hoạch nha?';
+    if (!window.confirm(confirmation)) return;
+    try {
+      const response = await fetch(`/api/${tableFor[itemKind]}?id=${encodeURIComponent(item.id)}`, { method: 'DELETE' });
+      if (!response.ok) {
+        let message = 'Xóa chưa thành công.';
+        try { const body = await response.json(); message = body.error ?? message; } catch {}
+        throw new Error(message);
+      }
+      if (itemKind === 'event') {
+        setData(current => ({ ...current, events: current.events.filter(row => row.id !== item.id), checklist: current.checklist.filter(row => row.event_id !== item.id) }));
+      } else {
+        const key = itemKind === 'place' ? 'places' : 'checklist';
+        setData(current => ({ ...current, [key]: current[key].filter(row => row.id !== item.id) }));
+      }
+      setToast('Đã xóa khỏi danh sách.');
+    } catch (error) { setToast(error instanceof Error ? error.message : 'Xóa chưa thành công.'); }
   }
   async function toggleCheck(item: ChecklistItem) {
+    if (pendingCheckIds.has(item.id)) return;
     const updated = { ...item, done: !item.done };
+    setPendingCheckIds(current => new Set(current).add(item.id));
     setData(current => ({ ...current, checklist: current.checklist.map(row => row.id === item.id ? updated : row) }));
-    const response = await fetch('/api/checklist_items', { method: 'PATCH', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(updated) });
-    if (!response.ok) { setData(current => ({ ...current, checklist: current.checklist.map(row => row.id === item.id ? item : row) })); setToast('Chưa cập nhật được checklist.'); }
+    try {
+      const response = await fetch('/api/checklist_items', { method: 'PATCH', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(updated) });
+      if (!response.ok) throw new Error('Chưa cập nhật được checklist.');
+    } catch {
+      setData(current => ({ ...current, checklist: current.checklist.map(row => row.id === item.id ? item : row) }));
+      setToast('Chưa cập nhật được checklist. Đã khôi phục trạng thái trước đó.');
+    } finally { setPendingCheckIds(current => { const next = new Set(current); next.delete(item.id); return next; }); }
   }
   async function togglePlaceVisited(place: Place) {
     const updated = { ...place, visited: !place.visited };
@@ -134,7 +156,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
   }
 
   const eventName = (id: string | null) => data.events.find(e => e.id === id)?.title;
-  const activeChecklist = featured ? data.checklist.filter(item => item.event_id === featured.id) : data.checklist;
+  const activeChecklist = featured ? data.checklist.filter(item => item.event_id === featured.id || item.event_id === null) : data.checklist;
   const doneCount = activeChecklist.filter(item => item.done).length;
   const visiblePlaces = tab === 'home' ? data.places.slice(0, 3) : data.places;
 
@@ -174,7 +196,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
         {(tab === 'home' || tab === 'events') && <section className="section-block checklist-section">
           <div className="section-heading"><div><p className="eyebrow">CHUẨN BỊ MỘT CHÚT</p><h2>Đừng quên mang theo</h2></div><span className="progress-label">{doneCount}/{activeChecklist.length} xong</span></div>
           <div className="checklist-card"><div className="progress-track"><span style={{width:`${activeChecklist.length ? doneCount / activeChecklist.length * 100 : 0}%`}}/></div>
-            {activeChecklist.length ? activeChecklist.map(item=><div className="check-row" key={item.id}><button className={`checkbox ${item.done?'checked':''}`} aria-label={item.done?'Bỏ đánh dấu':'Đánh dấu hoàn thành'} onClick={()=>void toggleCheck(item)}>{item.done&&<Check size={14}/>}</button><button className={`check-title ${item.done?'is-done':''}`} onClick={()=>openEdit('check',item)}>{item.title}</button>{eventName(item.event_id)&&<span className="check-event">{eventName(item.event_id)}</span>}<button className="mini-delete" aria-label="Xóa checklist" onClick={()=>void deleteItem('check',item)}><X size={15}/></button></div>) : <p className="empty-state">Chưa có gì cần chuẩn bị. Có thể thêm ngay nè!</p>}
+            {activeChecklist.length ? activeChecklist.map(item=><div className="check-row" key={item.id}><button className={`checkbox ${item.done?'checked':''}`} aria-label={item.done?'Bỏ đánh dấu':'Đánh dấu hoàn thành'} aria-busy={pendingCheckIds.has(item.id)} disabled={pendingCheckIds.has(item.id)} onClick={()=>void toggleCheck(item)}>{item.done&&<Check size={14}/>}</button><button className={`check-title ${item.done?'is-done':''}`} onClick={()=>openEdit('check',item)}>{item.title}</button>{eventName(item.event_id)&&<span className="check-event">{eventName(item.event_id)}</span>}<button className="mini-delete" aria-label="Xóa checklist" onClick={()=>void deleteItem('check',item)}><X size={15}/></button></div>) : <p className="empty-state">Chưa có gì cần chuẩn bị. Có thể thêm ngay nè!</p>}
             <button className="add-check" onClick={()=>openCreate('check',featured?.id)}><Plus size={15}/> Thêm một việc cần chuẩn bị</button>
           </div>
         </section>}

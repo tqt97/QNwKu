@@ -66,8 +66,9 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 
 ### Hành vi
 
-- Trang chủ ưu tiên hiển thị checklist của sự kiện gần nhất.
-- Checkbox cập nhật trạng thái ngay và gọi API lưu thay đổi; nếu lưu lỗi, giao diện hoàn tác.
+- Trang chủ ưu tiên hiển thị checklist của sự kiện gần nhất cùng các việc chung không gắn sự kiện.
+- Checkbox cập nhật trạng thái ngay và gọi API lưu thay đổi; nếu request lỗi hoặc mất mạng, giao diện hoàn tác và báo trạng thái.
+- Sửa nội dung checklist giữ nguyên trạng thái hoàn thành; xóa lịch hẹn cảnh báo trước về các checklist liên quan sẽ bị xóa theo.
 - Tiến độ hiển thị số mục đã xong trên tổng số mục.
 - Có thể sửa/xóa từng mục.
 
