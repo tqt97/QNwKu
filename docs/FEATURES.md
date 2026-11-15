@@ -86,7 +86,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Hero dùng mũi tên xuống có nhãn truy cập để cuộn tới danh sách dịp sắp tới.
 - Metadata sự kiện giữ giờ và địa điểm trên một dòng; nếu thiếu chỗ, phần địa điểm rút gọn bằng dấu ba chấm.
 - Tên sự kiện là nút sửa có accessible name, thao tác được bằng Tab/Enter; nút xóa là điều khiển riêng.
-- Màu chính: nền hồng kem `#fffafb`, hồng dâu, lavender, mint; chữ nâu tím.
+- Màu chính: nền hồng kem `#fffafb`, hồng dâu và lavender đậm hơn nhẹ, mint; chữ nâu tím giữ độ tương phản.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.
 - Thanh cuộn dùng kiểu mảnh, màu hồng xám nhẹ trên trình duyệt hỗ trợ tùy chỉnh.
 - Typography dùng font hệ thống cục bộ cho nội dung và heading, tránh phụ thuộc vào request Google Fonts; ưu tiên system UI và serif hệ thống trên iOS, Android, Windows và macOS. Cỡ chữ nội dung, từng cấp heading, màu chữ và khoảng cách dùng design tokens chung; chữ phụ thường từ 12px trở lên, màu chữ đạt tương phản rõ trên nền sáng.

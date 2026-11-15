@@ -112,6 +112,14 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .event-actions-menu[hidden]{display:none}
 .event-actions-menu button{flex:1;min-width:0;min-height:44px;padding:0 8px;border:0;border-radius:7px;background:transparent;color:var(--text-primary);font-size:var(--type-xs)}
 .event-actions-menu button:hover{background:var(--pink-light)}
+:root{--pink:#df6f93;--pink-deep:#ca4e76;--pink-light:#ffe7ef;--line:#ecd7df}
+.brand-mark,.sticker{background:#ffe4ec}
+.sticker{color:#c9557c}
+.hero-card{background:linear-gradient(112deg,#ffe8ef 0%,#f6e1eb 52%,#efe4f6 100%)}
+.event-datebox{background:#ffe7ef}
+.event-row:nth-child(2n) .event-datebox{background:#eee7f7}
+.progress-track span{background:linear-gradient(90deg,#e986a6,#c99acb)}
+.checkbox.checked::before{background:#d77d9c;border-color:#d77d9c}
 .add-picker-backdrop{align-items:end;padding:16px 16px max(16px,env(safe-area-inset-bottom))}
 .add-picker{width:min(100%,460px);max-height:none;overflow:visible}
 .add-picker-options{display:grid;gap:var(--space-2)}
