@@ -37,6 +37,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Đơn giản hóa mục lưu món/quán thành danh sách text có checkbox đã thử, giữ nguyên dữ liệu chi tiết cũ trong schema.
 - Đổi nút dưới cùng thành “Thêm mới” với bộ chọn loại nội dung trước khi mở form.
 - Đưa danh sách món/quán muốn thử lên trước checklist chuẩn bị trên trang chủ.
+- Đồng bộ menu dấu ba chấm của lịch hẹn với menu món/quán: cùng kiểu nút, menu dọc và nhãn thao tác.
 
 ## [1.0.0] - 2026-11-15
 
