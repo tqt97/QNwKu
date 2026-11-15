@@ -72,9 +72,9 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 ## Feature 4 — Giao diện responsive
 
 - Desktop: cột giới thiệu, vùng nội dung rộng, card nhiều cột.
-- Mobile: nội dung một cột, thanh điều hướng cố định dưới màn hình, card địa điểm hai cột.
+- Mobile: nội dung một cột, thanh điều hướng cố định dưới màn hình, danh sách món/quán dạng checklist.
 - Ở màn hình rộng đến 760px, giao diện chuyển sang một cột để tránh sidebar làm chật vùng nội dung; hero cho phép nút hành động xuống dòng trên màn hình rất hẹp.
-- Nút thêm trên thanh điều hướng mobile mở form địa điểm khi đang ở tab địa điểm; ở các tab còn lại mở form sự kiện.
+- Nút dưới cùng luôn là “Thêm mới”, mở bộ chọn Sự kiện / Chuẩn bị / Lưu lại rồi mới mở form tương ứng.
 - Nút thêm ở đầu mỗi danh sách có accessible name; nhãn hiển thị cạnh biểu tượng trên mobile khi đủ chỗ và thu gọn ở màn hình rất hẹp.
 - Thao tác sửa/xóa địa điểm nằm trong menu mở bằng nút ba chấm luôn hiển thị; nút và liên kết có focus ring rõ khi dùng bàn phím.
 - Nút mở menu địa điểm có vùng chạm tối thiểu 44px; input form trên mobile giữ cỡ 16px để tránh tự phóng to khi focus trên iOS.
@@ -102,6 +102,6 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 
 1. Trang hiển thị countdown đúng với giờ sự kiện trên thiết bị.
 2. Tạo/sửa/xóa sự kiện cập nhật danh sách và countdown.
-3. Tạo/sửa/xóa địa điểm, liên kết sự kiện, link map hoạt động.
+3. Lưu/sửa/xóa món hoặc quán; checkbox đã thử lưu đúng trạng thái.
 4. Checklist đánh dấu xong và tiến độ thay đổi.
 5. Giao diện dùng được trên khung màn hình điện thoại và desktop.

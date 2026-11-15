@@ -20,8 +20,9 @@
 
 - Countdown đến sự kiện sắp tới, cập nhật từng giây.
 - CRUD sự kiện: tên, ngày giờ, địa điểm, lời nhắn.
-- CRUD địa điểm: tên quán, loại hình, khu vực, món muốn thử, link Google Maps; gắn địa điểm vào sự kiện.
+- Danh sách món/quán muốn thử: lưu một dòng text, đánh dấu đã thử, sửa hoặc xóa.
 - CRUD checklist: việc cần chuẩn bị, gắn với sự kiện và đánh dấu hoàn thành.
+- Thanh **Thêm mới** trên điện thoại cho chọn Sự kiện, Chuẩn bị hoặc Lưu lại trước khi mở form.
 - Hiển thị tiến độ checklist theo sự kiện gần nhất.
 - Mobile-first: điều hướng dưới màn hình nhỏ, form dễ thao tác, layout thích ứng desktop.
 - Bảng màu hồng phấn, lavender và kem; dữ liệu demo có sẵn khi chưa cấu hình Supabase.

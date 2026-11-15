@@ -31,6 +31,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
   const [toast, setToast] = useState('');
   const [tab, setTab] = useState<'home' | 'events' | 'places'>('home');
   const [openPlaceActions, setOpenPlaceActions] = useState<string | null>(null);
+  const [showAddPicker, setShowAddPicker] = useState(false);
 
   useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 3000); return () => clearTimeout(timer); }, [toast]);
@@ -70,6 +71,10 @@ export default function Planner({ initialData, connectionError }: { initialData:
     setEditing(null);
     setForm(nextKind === 'event' ? { ...blankEvent } : nextKind === 'place' ? { ...blankPlace, event_id: eventId } : { ...blankCheck, event_id: eventId });
     setKind(nextKind);
+  }
+  function chooseAddKind(nextKind: Exclude<FormKind, null>) {
+    setShowAddPicker(false);
+    openCreate(nextKind);
   }
   function openEdit(nextKind: Exclude<FormKind, null>, item: EventItem | Place | ChecklistItem) {
     setEditing(item.id);
@@ -154,7 +159,9 @@ export default function Planner({ initialData, connectionError }: { initialData:
       </section>
     </div>
 
-    <nav className="mobile-nav" aria-label="Điều hướng"><button className={tab==='home'?'nav-active':''} onClick={()=>setTab('home')}><Heart size={18}/><span>Nhà mình</span></button><button className={tab==='events'?'nav-active':''} onClick={()=>setTab('events')}><CalendarDays size={18}/><span>Sự kiện</span></button><button className={tab==='places'?'nav-active':''} onClick={()=>setTab('places')}><MapPin size={18}/><span>Địa điểm</span></button><button className="nav-add" onClick={()=>openCreate(tab==='places'?'place':'event')}><Plus size={20}/><span>{tab==='places'?'Thêm địa điểm':'Thêm sự kiện'}</span></button></nav>
+    <nav className="mobile-nav" aria-label="Điều hướng"><button className={tab==='home'?'nav-active':''} onClick={()=>setTab('home')}><Heart size={18}/><span>Nhà mình</span></button><button className={tab==='events'?'nav-active':''} onClick={()=>setTab('events')}><CalendarDays size={18}/><span>Sự kiện</span></button><button className={tab==='places'?'nav-active':''} onClick={()=>setTab('places')}><MapPin size={18}/><span>Địa điểm</span></button><button className="nav-add" onClick={()=>setShowAddPicker(true)}><Plus size={20}/><span>Thêm mới</span></button></nav>
+
+    {showAddPicker&&<div className="modal-backdrop add-picker-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setShowAddPicker(false)}}><section className="form-modal add-picker" role="dialog" aria-modal="true" aria-labelledby="add-picker-title" onKeyDown={e=>{if(e.key==='Escape')setShowAddPicker(false)}}><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO KẾ HOẠCH</p><h2 id="add-picker-title">Mình muốn thêm gì nhỉ?</h2></div><button type="button" className="icon-button" onClick={()=>setShowAddPicker(false)} aria-label="Đóng"><X size={19}/></button></div><div className="add-picker-options"><button type="button" className="add-picker-option" autoFocus onClick={()=>chooseAddKind('event')}><CalendarDays size={20}/><span><strong>Sự kiện</strong><small>Ngày hẹn và giờ mình gặp nhau</small></span><ChevronRight size={17}/></button><button type="button" className="add-picker-option" onClick={()=>chooseAddKind('check')}><Check size={20}/><span><strong>Chuẩn bị</strong><small>Việc nhỏ hoặc món cần mang theo</small></span><ChevronRight size={17}/></button><button type="button" className="add-picker-option" onClick={()=>chooseAddKind('place')}><Heart size={20}/><span><strong>Lưu lại</strong><small>Tên món hoặc quán mình muốn thử</small></span><ChevronRight size={17}/></button></div></section></div>}
 
     {kind&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)closeForm()}}><section className="form-modal" role="dialog" aria-modal="true" aria-labelledby="form-title"><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO THẾ GIỚI NHỎ</p><h2 id="form-title">{editing?'Sửa một chút nha':kind==='event'?'Tạo lịch hẹn mới':kind==='place'?'Lưu điều mình muốn thử':'Thêm việc cần chuẩn bị'}</h2></div><button className="icon-button" onClick={closeForm} aria-label="Đóng"><X size={19}/></button></div>
       <form onSubmit={e=>{e.preventDefault();void saveItem()}}>

@@ -2,25 +2,30 @@
 
 ## Trang chủ
 
-Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa. Phần “Những dịp sắp tới” liệt kê sự kiện; chọn một hàng để sửa, biểu tượng thùng rác để xóa.
+Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa. Phần “Những dịp sắp tới” liệt kê sự kiện; nhấn tên sự kiện để sửa, dùng nút xóa riêng để xóa.
+
+## Thêm mới trên điện thoại
+
+1. Nhấn **Thêm mới** ở thanh điều hướng dưới.
+2. Chọn **Sự kiện**, **Chuẩn bị** hoặc **Lưu lại**.
+3. Điền form tương ứng rồi nhấn **Lưu lại**.
 
 ## Thêm sự kiện
 
-1. Nhấn **Thêm sự kiện** hoặc **Thêm mới** ở thanh dưới điện thoại.
+1. Chọn **Sự kiện** trong bộ chọn **Thêm mới**, hoặc nhấn nút thêm ở đầu danh sách sự kiện.
 2. Nhập tên và ngày giờ (hai trường bắt buộc).
 3. Thêm địa điểm và lời nhắn nếu muốn.
 4. Nhấn **Lưu lại**.
 
-## Lưu địa điểm
+## Lưu món hoặc quán muốn thử
 
-1. Chọn tab **Địa điểm**, nhấn **Thêm địa điểm**.
-2. Nhập tên quán; bổ sung loại hình, khu vực, món muốn thử và URL Google Maps.
-3. Có thể gắn với một sự kiện.
-4. Dùng **Mở bản đồ** để mở đường dẫn. Chọn biểu tượng ba chấm hoặc **Chỉnh sửa** để thay đổi thông tin.
+1. Chọn **Lưu lại** trong bộ chọn **Thêm mới**, hoặc nhấn dấu cộng ở đầu danh sách.
+2. Ghi một dòng đơn giản, ví dụ tên món hoặc tên quán.
+3. Nhấn checkbox khi đã thử/ghé. Mở menu ba chấm để sửa hoặc xóa mục.
 
 ## Checklist
 
-1. Ở trang chủ, nhấn **Thêm một việc cần chuẩn bị**.
+1. Chọn **Chuẩn bị** trong bộ chọn **Thêm mới**, hoặc nhấn **Thêm một việc cần chuẩn bị** trong checklist.
 2. Nhập nội dung, chọn sự kiện hoặc để việc chung.
 3. Nhấn checkbox để đánh dấu hoàn tất.
 4. Chọn nội dung để sửa; biểu tượng xóa ở cuối hàng để loại bỏ.
@@ -29,8 +34,8 @@ Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút
 
 - **Nhà mình:** countdown, sự kiện, checklist và một phần địa điểm.
 - **Sự kiện:** danh sách lịch hẹn.
-- **Địa điểm:** danh sách quán muốn ghé.
-- **Thêm mới:** mở nhanh form tạo sự kiện; có thể dùng nút thêm riêng tại từng khu vực để tạo địa điểm/checklist.
+- **Địa điểm:** checklist món và quán muốn thử.
+- **Thêm mới:** chọn tạo sự kiện, mục chuẩn bị hoặc mục muốn lưu.
 
 ## Dữ liệu demo
 
