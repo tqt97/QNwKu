@@ -31,28 +31,24 @@ Giúp người dùng thấy ngay sự kiện gần nhất và thời gian còn l
 - Nếu không còn sự kiện trong tương lai, hiển thị sự kiện gần nhất đã qua; khi không có sự kiện, hiển thị lời mời tạo lịch hẹn.
 - CRUD sự kiện qua modal. Xóa sự kiện đặt quan hệ địa điểm thành `null` và xóa checklist thuộc sự kiện bằng foreign key cascade.
 
-## Feature 2 — Danh sách địa điểm
+## Feature 2 — Danh sách món/quán muốn thử
 
 ### Mục đích
 
-Lưu quán ăn, quán nước, món muốn thử và link chỉ đường.
+Lưu nhanh tên món hoặc quán bằng một dòng text, rồi đánh dấu khi đã thử/ghé.
 
 ### Trường dữ liệu
 
-- `name` — tên địa điểm, bắt buộc.
-- `category` — loại hình, mặc định `Ăn uống`.
-- `area` — khu vực.
-- `dish` — món muốn thử.
-- `map_url` — URL bản đồ.
-- `event_id` — sự kiện liên quan, tùy chọn.
-- `visited` — trạng thái đã ghé, hiện lưu sẵn để mở rộng.
+- `name` — dòng text tên món hoặc quán, bắt buộc.
+- `visited` — trạng thái đã thử/ghé, dùng như checkbox hoàn thành.
+- Các cột `category`, `area`, `dish`, `map_url`, `event_id` tiếp tục được giữ trong database để bảo toàn dữ liệu đã lưu trước đây.
 
 ### Hành vi
 
-- Trang chủ hiển thị một số địa điểm đầu; tab địa điểm xem danh sách.
-- Heading của khu vực địa điểm là “Chỗ xinh mình muốn ghé” ở cả trang chủ và tab địa điểm. Khi danh sách trống, lời nhắc trải hết chiều rộng lưới card.
-- Từ card có thể chỉnh sửa, xóa hoặc mở Google Maps ở tab mới.
-- Có thể gắn địa điểm vào một sự kiện. Xóa sự kiện sẽ bỏ liên kết nhưng giữ địa điểm.
+- Trang chủ hiển thị một số mục đầu; tab địa điểm xem toàn bộ danh sách.
+- Mỗi mục gồm checkbox, text và menu sửa/xóa; form chỉ yêu cầu một dòng text.
+- Heading khu vực là “Chỗ xinh mình muốn ghé”; trạng thái trống chiếm hết chiều rộng danh sách.
+- Các bản ghi cũ vẫn hiển thị theo tên và giữ dữ liệu chi tiết cũ khi chỉ sửa tên.
 
 ## Feature 3 — Checklist chuẩn bị
 

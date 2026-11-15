@@ -48,7 +48,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
       payload.starts_at = new Date(String(payload.starts_at)).toISOString();
       payload.accent = 'pink';
     }
-    if (kind === 'place') { if (!payload.name) { setToast('Thêm tên địa điểm trước nha ♡'); return; } payload.event_id = payload.event_id || null; payload.visited = false; }
+    if (kind === 'place') { payload.name = String(payload.name ?? '').trim(); if (!payload.name) { setToast('Ghi tên món hoặc quán trước nha ♡'); return; } payload.event_id = payload.event_id || null; payload.visited = editing ? form.visited === 'true' : false; }
     if (kind === 'check') { if (!payload.title) { setToast('Viết một việc cần chuẩn bị nhé ♡'); return; } payload.event_id = payload.event_id || null; payload.done = false; }
     setBusy(true);
     try {
@@ -93,6 +93,17 @@ export default function Planner({ initialData, connectionError }: { initialData:
     const response = await fetch('/api/checklist_items', { method: 'PATCH', headers: { 'Content-Type':'application/json' }, body: JSON.stringify(updated) });
     if (!response.ok) { setData(current => ({ ...current, checklist: current.checklist.map(row => row.id === item.id ? item : row) })); setToast('Chưa cập nhật được checklist.'); }
   }
+  async function togglePlaceVisited(place: Place) {
+    const updated = { ...place, visited: !place.visited };
+    setData(current => ({ ...current, places: current.places.map(row => row.id === place.id ? updated : row) }));
+    try {
+      const response = await fetch('/api/places', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
+      if (!response.ok) { const body = await response.json(); throw new Error(body.error ?? 'Chưa cập nhật được danh sách muốn thử.'); }
+    } catch (error) {
+      setData(current => ({ ...current, places: current.places.map(row => row.id === place.id ? place : row) }));
+      setToast(error instanceof Error ? error.message : 'Chưa cập nhật được danh sách muốn thử.');
+    }
+  }
 
   const eventName = (id: string | null) => data.events.find(e => e.id === id)?.title;
   const activeChecklist = featured ? data.checklist.filter(item => item.event_id === featured.id) : data.checklist;
@@ -132,11 +143,10 @@ export default function Planner({ initialData, connectionError }: { initialData:
         </section>}
 
         {(tab === 'home' || tab === 'places') && <section className="section-block places-section">
-          <div className="section-heading"><div><p className="eyebrow">LƯU LẠI ĐỂ CÙNG ĐI</p><h2>Chỗ xinh mình muốn ghé</h2></div><button className="add-button" aria-label="Thêm địa điểm" onClick={()=>openCreate('place')}><Plus size={17}/><span>Thêm địa điểm</span></button></div>
-          <div className="place-grid">{visiblePlaces.length ? visiblePlaces.map((place,index)=><article className={`place-card place-${index%3}`} key={place.id}>
-            <div className="place-art"><span className="place-emoji">{place.category.toLowerCase().includes('cà')||place.category.toLowerCase().includes('uống')?'☕':place.category.toLowerCase().includes('tráng')?'🍰':'🍓'}</span><span className="place-category">{place.category}</span><button type="button" className="place-more" aria-label={`Thao tác với ${place.name}`} aria-expanded={openPlaceActions===place.id} aria-controls={`place-actions-${place.id}`} onClick={()=>setOpenPlaceActions(current=>current===place.id?null:place.id)}>···</button><div className="place-actions-menu" id={`place-actions-${place.id}`} hidden={openPlaceActions!==place.id}><button type="button" onClick={()=>{setOpenPlaceActions(null);openEdit('place',place)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}}>Xóa địa điểm</button></div></div>
-            <div className="place-details"><h3>{place.name}</h3><p className="place-area"><MapPin size={13}/>{place.area || 'Chưa thêm khu vực'}{eventName(place.event_id)&&<span> · {eventName(place.event_id)}</span>}</p>{place.dish&&<p className="dish-note"><span>♡</span> Muốn thử: {place.dish}</p>}<div className="place-actions">{place.map_url?<a className="map-link" href={place.map_url} target="_blank" rel="noreferrer">Mở bản đồ <MapPinned size={13}/></a>:<span className="map-missing">Chưa có bản đồ</span>}</div></div>
-          </article>) : <p className="empty-state">Chưa lưu địa điểm nào. Thấy quán xinh thì cất vào đây nhé ♡</p>}</div>
+          <div className="section-heading"><div><p className="eyebrow">MÓN NGON, QUÁN XINH MÌNH MUỐN THỬ</p><h2>Chỗ xinh mình muốn ghé</h2></div><button className="add-button" aria-label="Thêm món hoặc quán muốn thử" onClick={()=>openCreate('place')}><Plus size={17}/><span>Thêm mới</span></button></div>
+          <div className="place-list">{visiblePlaces.length ? visiblePlaces.map(place=><article className="place-row" key={place.id}>
+            <button className={`checkbox ${place.visited?'checked':''}`} aria-label={place.visited?`Bỏ đánh dấu đã thử ${place.name}`:`Đánh dấu đã thử ${place.name}`} onClick={()=>void togglePlaceVisited(place)}>{place.visited&&<Check size={14}/>}</button><span className={`place-note-title ${place.visited?'is-done':''}`}>{place.name}</span><button type="button" className="place-more" aria-label={`Thao tác với ${place.name}`} aria-expanded={openPlaceActions===place.id} aria-controls={`place-actions-${place.id}`} onClick={()=>setOpenPlaceActions(current=>current===place.id?null:place.id)}>···</button><div className="place-actions-menu" id={`place-actions-${place.id}`} hidden={openPlaceActions!==place.id}><button type="button" onClick={()=>{setOpenPlaceActions(null);openEdit('place',place)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}}>Xóa mục</button></div>
+          </article>) : <p className="empty-state">Chưa lưu món hay quán nào. Thấy gì hay thì ghi lại ở đây nha ♡</p>}</div>
           {tab==='home'&&data.places.length>3&&<button className="see-all" onClick={()=>setTab('places')}>Xem tất cả địa điểm <ChevronRight size={15}/></button>}
         </section>}
 
@@ -146,10 +156,10 @@ export default function Planner({ initialData, connectionError }: { initialData:
 
     <nav className="mobile-nav" aria-label="Điều hướng"><button className={tab==='home'?'nav-active':''} onClick={()=>setTab('home')}><Heart size={18}/><span>Nhà mình</span></button><button className={tab==='events'?'nav-active':''} onClick={()=>setTab('events')}><CalendarDays size={18}/><span>Sự kiện</span></button><button className={tab==='places'?'nav-active':''} onClick={()=>setTab('places')}><MapPin size={18}/><span>Địa điểm</span></button><button className="nav-add" onClick={()=>openCreate(tab==='places'?'place':'event')}><Plus size={20}/><span>{tab==='places'?'Thêm địa điểm':'Thêm sự kiện'}</span></button></nav>
 
-    {kind&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)closeForm()}}><section className="form-modal" role="dialog" aria-modal="true" aria-labelledby="form-title"><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO THẾ GIỚI NHỎ</p><h2 id="form-title">{editing?'Sửa một chút nha':kind==='event'?'Tạo lịch hẹn mới':kind==='place'?'Lưu địa điểm xinh':'Thêm việc cần chuẩn bị'}</h2></div><button className="icon-button" onClick={closeForm} aria-label="Đóng"><X size={19}/></button></div>
+    {kind&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)closeForm()}}><section className="form-modal" role="dialog" aria-modal="true" aria-labelledby="form-title"><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO THẾ GIỚI NHỎ</p><h2 id="form-title">{editing?'Sửa một chút nha':kind==='event'?'Tạo lịch hẹn mới':kind==='place'?'Lưu điều mình muốn thử':'Thêm việc cần chuẩn bị'}</h2></div><button className="icon-button" onClick={closeForm} aria-label="Đóng"><X size={19}/></button></div>
       <form onSubmit={e=>{e.preventDefault();void saveItem()}}>
         {kind==='event'&&<><label>Tên sự kiện<input autoFocus placeholder="Ví dụ: Cuối tuần mình đi Đà Lạt" value={form.title??''} onChange={e=>setForm({...form,title:e.target.value})}/></label><label>Ngày và giờ<input type="datetime-local" value={form.starts_at??''} onChange={e=>setForm({...form,starts_at:e.target.value})}/></label><label>Địa điểm<input placeholder="Đà Lạt, quán cà phê..." value={form.location??''} onChange={e=>setForm({...form,location:e.target.value})}/></label><label>Lời nhắn nhỏ<textarea rows={3} placeholder="Điều gì đó muốn nhớ về ngày này..." value={form.note??''} onChange={e=>setForm({...form,note:e.target.value})}/></label></>}
-        {kind==='place'&&<><label>Tên quán / địa điểm<input autoFocus placeholder="Tên quán mình muốn ghé" value={form.name??''} onChange={e=>setForm({...form,name:e.target.value})}/></label><div className="form-row"><label>Loại hình<input placeholder="Cà phê, ăn tối..." value={form.category??''} onChange={e=>setForm({...form,category:e.target.value})}/></label><label>Khu vực<input placeholder="Đà Lạt..." value={form.area??''} onChange={e=>setForm({...form,area:e.target.value})}/></label></div><label>Món muốn thử<input placeholder="Cacao nóng, lẩu nấm..." value={form.dish??''} onChange={e=>setForm({...form,dish:e.target.value})}/></label><label>Link Google Maps<input type="url" placeholder="https://maps.google.com/..." value={form.map_url??''} onChange={e=>setForm({...form,map_url:e.target.value})}/></label><label>Gắn với sự kiện<select value={form.event_id??''} onChange={e=>setForm({...form,event_id:e.target.value})}><option value="">Chưa gắn sự kiện</option>{data.events.map(event=><option key={event.id} value={event.id}>{event.title}</option>)}</select></label></>}
+        {kind==='place'&&<label>Món hoặc quán mình muốn thử<input autoFocus placeholder="Matcha latte, quán cà phê cạnh hồ..." value={form.name??''} onChange={e=>setForm({...form,name:e.target.value})}/></label>}
         {kind==='check'&&<><label>Việc cần chuẩn bị<input autoFocus placeholder="Ví dụ: Sạc dự phòng" value={form.title??''} onChange={e=>setForm({...form,title:e.target.value})}/></label><label>Cho sự kiện<select value={form.event_id??''} onChange={e=>setForm({...form,event_id:e.target.value})}><option value="">Việc chung</option>{data.events.map(event=><option key={event.id} value={event.id}>{event.title}</option>)}</select></label></>}
         <div className="modal-actions"><button type="button" className="cancel-button" onClick={closeForm}>Để sau</button><button type="submit" className="primary-button" disabled={busy}>{busy?'Đang lưu...':<><Heart size={15} fill="currentColor"/>{editing?'Lưu thay đổi':'Lưu lại ♡'}</>}</button></div>
       </form>

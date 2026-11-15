@@ -91,6 +91,13 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .event-edit{padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left}
 .event-edit:hover{text-decoration:underline;text-decoration-color:#d5a4b5;text-underline-offset:3px}
 @media(max-width:390px){.hero-bottom{align-items:flex-start;flex-wrap:wrap;gap:var(--space-2)}.hero-bottom>span{flex:1 1 100%}.hero-bottom .text-button{margin-left:auto}}
+.place-list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.76)}
+.place-row{position:relative;display:flex;align-items:center;gap:var(--space-2);min-height:64px;padding:8px 54px 8px 10px;border-bottom:1px solid #f4ecef}
+.place-row:last-child{border-bottom:0}
+.place-note-title{flex:1;min-width:0;color:var(--text-primary);font-size:var(--type-sm);line-height:1.45;overflow-wrap:anywhere}
+.place-note-title.is-done{color:var(--text-secondary);text-decoration:line-through}
+.place-row .place-actions-menu{top:calc(100% - 8px)}
+.place-list>.empty-state{width:100%;padding:20px 16px}
 
 /* Keep the soft palette while giving secondary copy enough contrast to read. */
 .brand small,.topbar-note,.intro-copy,.hero-date,.time-unit span,.hero-bottom,.section-heading .eyebrow,.event-datebox,.event-copy p,.progress-label,.place-area,.footer-note{color:#765f6c}
