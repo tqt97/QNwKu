@@ -12,7 +12,7 @@ flowchart LR
   API --> Supabase
 ```
 
-Trang server tải dữ liệu ban đầu qua Supabase. Client component `Planner` quản lý state tương tác. Mỗi thao tác ghi gọi Next.js route handler, route kiểm tra tên bảng trong allowlist rồi gọi Supabase bằng anon key; RLS quyết định quyền thao tác.
+Trang server tải dữ liệu ban đầu qua Supabase và truyền một snapshot thời gian để lần render đầu của Client Component khớp với HTML SSR. Các ngày giờ hiển thị và nhập được chuẩn hóa theo múi giờ `Asia/Ho_Chi_Minh`; database lưu instant dưới dạng `timestamptz`. Client component `Planner` quản lý state tương tác. Mỗi thao tác ghi gọi Next.js route handler, route kiểm tra tên bảng trong allowlist rồi gọi Supabase bằng anon key; RLS quyết định quyền thao tác.
 
 ## Các thành phần
 

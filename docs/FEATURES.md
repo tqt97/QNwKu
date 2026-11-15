@@ -28,6 +28,7 @@ Giúp người dùng thấy ngay sự kiện gần nhất và thời gian còn l
 
 - Trang chủ chọn sự kiện có `starts_at` gần nhất nhưng chưa qua.
 - Bộ đếm hiển thị ngày, giờ, phút và giây.
+- Ngày giờ nhập và hiển thị theo múi giờ ứng dụng `Asia/Ho_Chi_Minh`; thời điểm SSR được gửi xuống để countdown khớp trong lần hydrate đầu.
 - Hàng sự kiện giữ tháng/ngày trong ô vuông cố định, hiển thị giờ và địa điểm gọn một dòng; menu dấu ba chấm dùng cùng kiểu dọc như danh sách món/quán để mở thao tác sửa/xóa.
 - Nếu không còn sự kiện trong tương lai, hiển thị sự kiện gần nhất đã qua; khi không có sự kiện, hiển thị lời mời tạo lịch hẹn.
 - CRUD sự kiện qua modal. Xóa sự kiện đặt quan hệ địa điểm thành `null` và xóa checklist thuộc sự kiện bằng foreign key cascade.

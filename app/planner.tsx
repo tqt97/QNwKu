@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, Plus, Sparkles, Trash2, X } from 'lucide-react';
 import type { AppData, ChecklistItem, EventItem, Place } from '@/lib/types';
+import { dateToLocalInput, formatAppDateTime, formatAppDay, formatAppMonth, formatAppTime, localInputToISO } from '@/lib/dates';
 
 type FormKind = 'event' | 'place' | 'check' | null;
 const tableFor = { event: 'events', place: 'places', check: 'checklist_items' } as const;
@@ -10,21 +11,14 @@ const blankEvent = { title: '', starts_at: '', location: '', note: '' };
 const blankPlace = { name: '', category: 'Ăn uống', area: '', dish: '', map_url: '', event_id: '' };
 const blankCheck = { title: '', event_id: '' };
 
-function asLocalInput(date: string) {
-  const d = new Date(date);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-function prettyDate(date: string) { return new Intl.DateTimeFormat('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }).format(new Date(date)); }
-function prettyTime(date: string) { return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit' }).format(new Date(date)); }
 function countdown(date: string, now: number) {
   const seconds = Math.max(0, Math.floor((new Date(date).getTime() - now) / 1000));
   return { days: Math.floor(seconds / 86400), hours: Math.floor((seconds % 86400) / 3600), minutes: Math.floor((seconds % 3600) / 60), seconds: seconds % 60, passed: new Date(date).getTime() < now };
 }
 
-export default function Planner({ initialData, connectionError }: { initialData: AppData; connectionError: string }) {
+export default function Planner({ initialData, initialNow, connectionError }: { initialData: AppData; initialNow: number; connectionError: string }) {
   const [data, setData] = useState(initialData);
-  const [now, setNow] = useState(0);
+  const [now, setNow] = useState(initialNow);
   const [kind, setKind] = useState<FormKind>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<Record<string, string>>({});
@@ -70,7 +64,8 @@ export default function Planner({ initialData, connectionError }: { initialData:
     const payload: Record<string, unknown> = { ...form };
     if (kind === 'event') {
       if (!payload.title || !payload.starts_at) { setToast('Bạn nhập tên và thời gian sự kiện nhé ♡'); return; }
-      payload.starts_at = new Date(String(payload.starts_at)).toISOString();
+      try { payload.starts_at = localInputToISO(String(payload.starts_at)); }
+      catch (error) { setToast(error instanceof Error ? error.message : 'Ngày giờ chưa hợp lệ.'); return; }
       payload.accent = 'pink';
     }
     if (kind === 'place') { payload.name = String(payload.name ?? '').trim(); if (!payload.name) { setToast('Ghi tên món hoặc quán trước nha ♡'); return; } payload.event_id = payload.event_id || null; payload.visited = editing ? form.visited === 'true' : false; }
@@ -103,7 +98,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
   function openEdit(nextKind: Exclude<FormKind, null>, item: EventItem | Place | ChecklistItem) {
     setEditing(item.id);
     const values = { ...item } as unknown as Record<string, unknown>;
-    if (nextKind === 'event') values.starts_at = asLocalInput(String(values.starts_at));
+    if (nextKind === 'event') values.starts_at = dateToLocalInput(String(values.starts_at));
     Object.keys(values).forEach(key => { if (values[key] === null) values[key] = ''; });
     setForm(Object.fromEntries(Object.entries(values).map(([k,v]) => [k, String(v ?? '')])));
     setKind(nextKind);
@@ -171,7 +166,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
         {tab !== 'places' && <section className="hero-card">
           <div className="hero-sparkle sparkle-one">✦</div><div className="hero-sparkle sparkle-two">✧</div>
           <div className="hero-top"><span className="pill"><Heart size={13} fill="currentColor"/> {featured ? 'NGÀY TỤI MÌNH GẶP NHAU' : 'THÊM MỘT KHOẢNH KHẮC'}</span><button className="icon-button hero-edit" aria-label="Sửa sự kiện" onClick={() => featured ? openEdit('event', featured) : openCreate('event')}><CalendarDays size={17}/></button></div>
-          {featured ? <><h2>{featured.title}</h2><p className="hero-date"><CalendarDays size={15}/>{prettyDate(featured.starts_at)}<span className="dot">·</span><MapPin size={15}/>{featured.location || 'Chưa chọn địa điểm'}</p>
+          {featured ? <><h2>{featured.title}</h2><p className="hero-date"><CalendarDays size={15}/>{formatAppDateTime(featured.starts_at)}<span className="dot">·</span><MapPin size={15}/>{featured.location || 'Chưa chọn địa điểm'}</p>
             <div className="countdown" aria-label="Thời gian đếm ngược">{clock?.passed ? <div className="today-message">Hẹn hò đang diễn ra đó! Tận hưởng từng phút bên nhau nha ♡</div> : <>{[[clock?.days ?? 0,'ngày'],[clock?.hours ?? 0,'giờ'],[clock?.minutes ?? 0,'phút'],[clock?.seconds ?? 0,'giây']].map(([n,label]) => <div className="time-unit" key={String(label)}><strong>{String(n).padStart(2,'0')}</strong><span>{label}</span></div>)}</>}</div>
             <div className="hero-bottom"><span>đếm từng chút một để gặp cậu <span className="heart-pulse">♥</span></span><button type="button" className="text-button scroll-down" aria-label="Cuộn xuống những dịp sắp tới" onClick={()=>document.getElementById('upcoming-events')?.scrollIntoView({behavior:'smooth',block:'start'})}><ChevronDown size={20}/></button></div>
           </> : <><h2>Ngày gặp nhau<br/>đang chờ được lên lịch</h2><p className="hero-date">Tạo một sự kiện để bắt đầu đếm ngược ♡</p><button className="primary-button" onClick={() => openCreate('event')}><Plus size={17}/>Tạo sự kiện đầu tiên</button></>}
@@ -180,7 +175,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
         {(tab === 'home' || tab === 'events') && <section className="section-block" id="upcoming-events">
           <div className="section-heading"><div><p className="eyebrow">LỊCH HẸN DỄ THƯƠNG</p><h2>{tab === 'events' ? 'Tất cả sự kiện' : 'Những dịp sắp tới'}</h2></div><button className="add-button" aria-label="Thêm sự kiện" onClick={() => openCreate('event')}><Plus size={17}/><span>Thêm sự kiện</span></button></div>
           <div className="event-list">{data.events.length ? data.events.map((event,index) => <article className={`event-row ${index === 0 ? 'event-row-featured' : ''}`} key={event.id}>
-            <div className="event-datebox"><span>{new Intl.DateTimeFormat('vi-VN',{month:'short'}).format(new Date(event.starts_at)).replace('.','')}</span><strong>{new Date(event.starts_at).getDate()}</strong></div><div className="event-copy"><h3>{event.title}</h3><p><span className="event-meta-item"><Clock3 size={13}/>{prettyTime(event.starts_at)}</span><span className="event-meta-item"><MapPin size={13}/>{event.location || 'Chưa có địa điểm'}</span></p></div><div className="event-actions-root" data-actions-root><button type="button" className="event-more" data-actions-root aria-label={`Thao tác với ${event.title}`} aria-expanded={openEventActions===event.id} aria-controls={`event-actions-${event.id}`} onClick={()=>{setOpenPlaceActions(null);setOpenEventActions(current=>current===event.id?null:event.id)}}>···</button><div className="place-actions-menu event-actions-menu" data-actions-root id={`event-actions-${event.id}`} hidden={openEventActions!==event.id}><button type="button" onClick={()=>{setOpenEventActions(null);openEdit('event',event)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenEventActions(null);void deleteItem('event',event)}}>Xóa mục</button></div></div>
+            <div className="event-datebox"><span>{formatAppMonth(event.starts_at)}</span><strong>{formatAppDay(event.starts_at)}</strong></div><div className="event-copy"><h3>{event.title}</h3><p><span className="event-meta-item"><Clock3 size={13}/>{formatAppTime(event.starts_at)}</span><span className="event-meta-item"><MapPin size={13}/>{event.location || 'Chưa có địa điểm'}</span></p></div><div className="event-actions-root" data-actions-root><button type="button" className="event-more" data-actions-root aria-label={`Thao tác với ${event.title}`} aria-expanded={openEventActions===event.id} aria-controls={`event-actions-${event.id}`} onClick={()=>{setOpenPlaceActions(null);setOpenEventActions(current=>current===event.id?null:event.id)}}>···</button><div className="place-actions-menu event-actions-menu" data-actions-root id={`event-actions-${event.id}`} hidden={openEventActions!==event.id}><button type="button" onClick={()=>{setOpenEventActions(null);openEdit('event',event)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenEventActions(null);void deleteItem('event',event)}}>Xóa mục</button></div></div>
           </article>) : <p className="empty-state">Chưa có lịch hẹn nào. Mình tạo chiếc đầu tiên nha ♡</p>}</div>
         </section>}
 
