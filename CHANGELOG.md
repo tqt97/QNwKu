@@ -18,6 +18,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Bổ sung accessible name cho nút thêm và giữ nhãn hiển thị trên phần lớn kích thước mobile.
 - Đưa sửa/xóa địa điểm vào menu thao tác dùng được trên cảm ứng và thêm focus ring cho bàn phím.
 - Tách thời gian và địa điểm sự kiện thành hai dòng dễ đọc trên màn hình nhỏ.
+- Giữ vùng chạm menu card đủ lớn và cỡ input mobile phù hợp để tránh iOS tự zoom.
 
 ## [1.0.0] - 2026-11-15
 
