@@ -64,6 +64,9 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .row-delete,.mini-delete{color:var(--accent-strong)}
 .row-delete:focus-visible,.mini-delete:focus-visible{opacity:1}
 @media(max-width:680px){.form-modal input,.form-modal textarea,.form-modal select{font-size:16px}}
+@media(max-width:680px){.topbar-note{font-size:0}}
+.check-event,.check-title.is-done{color:var(--text-secondary)}
+.dish-note{color:var(--accent-strong)}
 
 /* Keep the soft palette while giving secondary copy enough contrast to read. */
 .brand small,.topbar-note,.intro-copy,.hero-date,.time-unit span,.hero-bottom,.section-heading .eyebrow,.event-datebox,.event-copy p,.progress-label,.place-area,.footer-note{color:#765f6c}

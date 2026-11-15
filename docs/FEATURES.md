@@ -86,6 +86,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.
 - Thanh cuộn dùng kiểu mảnh, màu hồng xám nhẹ trên trình duyệt hỗ trợ tùy chỉnh.
 - Typography dùng font hệ thống cục bộ cho nội dung và heading, tránh phụ thuộc vào request Google Fonts; ưu tiên system UI trên iOS, Android, Windows và macOS. Cỡ chữ, màu chữ, heading và khoảng cách dùng design tokens chung; chữ phụ thường từ 12px trở lên, màu chữ đạt tương phản rõ trên nền sáng.
+- Ghi chú header tiếp tục ẩn trên mobile để nhường chỗ cho tên web; trạng thái checklist và món muốn thử dùng màu chữ đủ đậm.
 
 ## Quy tắc nghiệp vụ và giới hạn
 
