@@ -83,6 +83,7 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .checkbox svg{position:relative;z-index:1}
 .row-delete,.mini-delete{width:44px;height:44px;flex:none}
 .add-button,.primary-button,.cancel-button,.text-button,.add-check,.see-all,.map-link{min-height:44px}
+.add-button{min-width:44px;justify-content:center}
 .event-row{cursor:default}
 .event-row:hover{background:transparent}
 .event-edit{padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left}
