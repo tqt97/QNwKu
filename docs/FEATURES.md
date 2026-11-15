@@ -80,6 +80,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Màu chính: nền hồng kem `#fffafb`, hồng dâu, lavender, mint; chữ nâu tím.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.
 - Thanh cuộn dùng kiểu mảnh, màu hồng xám nhẹ trên trình duyệt hỗ trợ tùy chỉnh.
+- Typography dùng DM Sans cho nội dung và Playfair Display cho tiêu đề, có font hệ thống dự phòng cho iOS, Android, Windows và macOS. Các cấp heading chia sẻ cùng họ font, màu và nhịp dòng.
 
 ## Quy tắc nghiệp vụ và giới hạn
 
