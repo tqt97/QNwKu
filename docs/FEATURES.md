@@ -83,6 +83,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Nút mở menu địa điểm có vùng chạm tối thiểu 44px; input form trên mobile giữ cỡ 16px để tránh tự phóng to khi focus trên iOS.
 - Các nút icon, checkbox, xóa và CTA có vùng chạm tối thiểu 44px mà vẫn giữ icon nhỏ gọn.
 - Metadata sự kiện tách giờ và địa điểm thành hai mục; trên mobile hiển thị thành hai dòng để tránh cắt mất địa điểm.
+- Tên sự kiện là nút sửa có accessible name, thao tác được bằng Tab/Enter; nút xóa là điều khiển riêng.
 - Màu chính: nền hồng kem `#fffafb`, hồng dâu, lavender, mint; chữ nâu tím.
 - Form dùng input lớn trên mobile để thuận tiện thao tác.
 - Thanh cuộn dùng kiểu mảnh, màu hồng xám nhẹ trên trình duyệt hỗ trợ tùy chỉnh.

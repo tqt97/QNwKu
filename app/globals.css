@@ -83,6 +83,10 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .checkbox svg{position:relative;z-index:1}
 .row-delete,.mini-delete{width:44px;height:44px;flex:none}
 .add-button,.primary-button,.cancel-button,.text-button,.add-check,.see-all,.map-link{min-height:44px}
+.event-row{cursor:default}
+.event-row:hover{background:transparent}
+.event-edit{padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left}
+.event-edit:hover{text-decoration:underline;text-decoration-color:#d5a4b5;text-underline-offset:3px}
 
 /* Keep the soft palette while giving secondary copy enough contrast to read. */
 .brand small,.topbar-note,.intro-copy,.hero-date,.time-unit span,.hero-bottom,.section-heading .eyebrow,.event-datebox,.event-copy p,.progress-label,.place-area,.footer-note{color:#765f6c}

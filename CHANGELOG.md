@@ -24,6 +24,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Áp dụng cùng font serif hệ thống cho toàn bộ heading để giữ kiểu chữ đồng bộ khi không tải font ngoài.
 - Tăng tương phản cho trích dẫn ở phần giới thiệu.
 - Mở rộng vùng chạm cho nút sửa, xóa, checkbox và CTA lên tối thiểu 44px.
+- Thêm nút sửa sự kiện có nhãn hỗ trợ bàn phím, tách riêng khỏi nút xóa.
 
 ## [1.0.0] - 2026-11-15
 
