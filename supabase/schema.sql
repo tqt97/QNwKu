@@ -32,6 +32,28 @@ create table if not exists public.checklist_items (
   created_at timestamptz not null default now()
 );
 
+-- Enable live row changes for the three planner lists.
+do $realtime$
+declare
+  target_table text;
+begin
+  if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    execute 'create publication supabase_realtime';
+  end if;
+
+  foreach target_table in array array['events', 'places', 'checklist_items'] loop
+    if not exists (
+      select 1 from pg_publication_tables
+      where pubname = 'supabase_realtime'
+        and schemaname = 'public'
+        and tablename = target_table
+    ) then
+      execute format('alter publication supabase_realtime add table public.%I', target_table);
+    end if;
+  end loop;
+end
+$realtime$;
+
 alter table public.events enable row level security;
 alter table public.places enable row level security;
 alter table public.checklist_items enable row level security;

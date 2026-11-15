@@ -6,6 +6,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 
 ### Changed
 
+- Đồng bộ realtime INSERT/UPDATE/DELETE cho sự kiện, món/quán và checklist; tự tải snapshot khi kết nối/kết nối lại và hiển thị trạng thái kết nối.
 - Hiển thị checklist chung cùng checklist của sự kiện gần nhất; khi sửa checklist giữ trạng thái hoàn thành, hoàn tác khi lỗi mạng và đồng bộ checklist con khi xóa sự kiện.
 - Cảnh báo số việc chuẩn bị sẽ bị xóa cùng lịch hẹn; xử lý lỗi mạng khi xóa bằng thông báo trong giao diện.
 - Chuẩn hóa ngày giờ theo múi giờ Việt Nam và dùng snapshot thời gian SSR chung cho countdown để tránh hydration mismatch và số đếm sai lúc tải đầu.

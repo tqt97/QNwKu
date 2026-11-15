@@ -9,6 +9,7 @@ import EventRow from './components/EventRow';
 import PlaceRow from './components/PlaceRow';
 import ChecklistRow from './components/ChecklistRow';
 import HeroCard from './components/HeroCard';
+import { usePlannerRealtime, type RealtimeStatus } from './hooks/usePlannerRealtime';
 
 type FormKind = 'event' | 'place' | 'check' | null;
 const tableFor = { event: 'events', place: 'places', check: 'checklist_items' } as const;
@@ -41,7 +42,9 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
   const [openEventActions, setOpenEventActions] = useState<string | null>(null);
   const [showAddPicker, setShowAddPicker] = useState(false);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const [realtimeStatus, setRealtimeStatus] = useState<RealtimeStatus>('connecting');
 
+  usePlannerRealtime(setData, setRealtimeStatus);
   useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 30_000); return () => clearInterval(timer); }, []);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 3000); return () => clearTimeout(timer); }, [toast]);
   useEffect(() => {
@@ -98,7 +101,7 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
       if (result) setData(current => {
         const key = kind === 'check' ? 'checklist' : kind === 'place' ? 'places' : 'events';
         const list = current[key] as Array<{id:string}>;
-        return { ...current, [key]: editing ? list.map(row => row.id === editing ? result : row) : [result, ...list] };
+        return { ...current, [key]: editing ? list.map(row => row.id === editing ? result : row) : [result, ...list.filter(row => row.id !== result.id)] };
       });
       setToast(editing ? 'Đã cập nhật rồi nè ✨' : 'Đã thêm vào kế hoạch ♡'); closeForm();
     } catch (error) { setToast(error instanceof Error ? error.message : 'Có lỗi xảy ra.'); }
@@ -184,7 +187,7 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
   const visiblePlaces = tab === 'home' ? data.places.slice(0, 3) : data.places;
 
   return <main className="app-shell">
-    <header className="topbar"><a href="#home" className="brand"><span className="brand-mark"><Heart className="brand-heart" size={19} fill="currentColor" /></span><span><span className="brand-name">KU</span> ơi, mình đi đâu thế</span></a><span className="topbar-note"><Sparkles size={15}/> một góc nhỏ của hai đứa</span></header>
+    <header className="topbar"><a href="#home" className="brand"><span className="brand-mark"><Heart className="brand-heart" size={19} fill="currentColor" /></span><span><span className="brand-name">KU</span> ơi, mình đi đâu thế</span></a><span className="topbar-note"><Sparkles size={15}/><span>một góc nhỏ của hai đứa</span><span className="sync-label" role="status" aria-live="polite">{realtimeStatus === 'connected' ? 'đang đồng bộ trực tiếp' : realtimeStatus === 'offline' ? 'kết nối trực tiếp bị gián đoạn' : realtimeStatus === 'sync-error' ? 'chưa tải lại được dữ liệu mới' : realtimeStatus === 'demo' ? 'dữ liệu xem thử' : 'đang kết nối dữ liệu'}</span></span></header>
 
     <div className="layout" id="home">
       <aside className="side-intro"><div className="sticker">♡</div><h1>Những ngày<br/>mình mong chờ</h1><p className="intro-copy">Lưu lại những nơi muốn đến, những món muốn thử và mọi điều nho nhỏ trước ngày gặp nhau.</p><div className="side-note"><span>💌</span><p>“Đi đâu cũng được,<br/>miễn là đi cùng nhau.”</p></div><span className="side-flower">✿</span></aside>

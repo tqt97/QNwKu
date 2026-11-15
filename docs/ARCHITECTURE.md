@@ -18,11 +18,12 @@ Trang server tải dữ liệu ban đầu qua Supabase và truyền một snapsh
 
 - `app/page.tsx`: tải dữ liệu; trả danh sách rỗng cùng lỗi nếu Supabase không truy cập được.
 - `app/planner.tsx`: điều phối state CRUD, điều hướng và form; các hàng sự kiện, món/quán và checklist tách thành component trong `app/components/`.
+- `app/hooks/usePlannerRealtime.ts`: đăng ký Postgres Changes cho ba bảng, cập nhật state theo INSERT/UPDATE/DELETE và tải lại snapshot khi kết nối thành công hoặc khôi phục kết nối.
 - `app/components/HeroCard.tsx`: quản lý nhịp cập nhật countdown riêng mỗi giây để không render lại toàn trang theo đồng hồ.
 - `app/components/EventRow.tsx`, `PlaceRow.tsx`, `ChecklistRow.tsx`: render từng hàng và nhận callback thao tác từ Planner.
 - `lib/dates.ts`: timezone ứng dụng, chuyển đổi input datetime-local và định dạng SSR/client thống nhất.
 - `app/api/[table]/route.ts`: POST/PATCH/DELETE; chỉ chấp nhận `events`, `places`, `checklist_items`.
-- `lib/supabase.ts`: tạo client server-side từ URL và anon key.
+- `lib/supabase.ts`: tạo Supabase client từ URL và anon key dùng cho truy vấn server và subscription trình duyệt.
 - `lib/data.ts`: đọc ba bảng hoặc trả demo nếu thiếu env.
 - `lib/types.ts`: kiểu dữ liệu giao diện.
 - `supabase/schema.sql`: schema, foreign keys, index và policies.
@@ -80,6 +81,7 @@ API trả JSON cho kết quả/error; DELETE thành công trả 204. Không có 
 - Checklist cập nhật lạc quan và hoàn tác khi request thất bại.
 - Lỗi Supabase khi tải hiển thị ở đầu trang; lỗi thao tác hiển thị toast.
 - Dữ liệu demo dùng ID giả định danh `demo-*`; không ghi đè dữ liệu Supabase.
+- Khi có Supabase, Realtime dùng publication `supabase_realtime`; script schema tự thêm ba bảng planner nếu chưa có. Không có cấu hình Supabase thì app ở chế độ demo và không mở subscription.
 
 ## Phân trang và quy mô dữ liệu
 

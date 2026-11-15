@@ -24,6 +24,7 @@
 - CRUD checklist: việc cần chuẩn bị, gắn với sự kiện và đánh dấu hoàn thành.
 - Thanh **Thêm mới** trên điện thoại cho chọn Sự kiện, Chuẩn bị hoặc Lưu lại trước khi mở form.
 - Hiển thị tiến độ checklist theo sự kiện gần nhất.
+- Tự đồng bộ sự kiện, món/quán và checklist theo thời gian thực giữa các thiết bị dùng chung Supabase.
 - Mobile-first: điều hướng dưới màn hình nhỏ, form dễ thao tác, layout thích ứng desktop.
 - Bảng màu hồng phấn, lavender và kem; dữ liệu demo có sẵn khi chưa cấu hình Supabase.
 

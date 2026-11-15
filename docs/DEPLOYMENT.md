@@ -21,6 +21,7 @@ Không có env thì ứng dụng dùng nội dung demo. Để ghi dữ liệu, c
 1. Tạo project mới.
 2. Mở SQL Editor và chạy `supabase/schema.sql`.
 3. Kiểm tra Table Editor có ba bảng: `events`, `places`, `checklist_items`.
+   Script cũng thêm ba bảng vào publication `supabase_realtime` để danh sách tự cập nhật khi có thay đổi từ thiết bị khác. Nếu database đã chạy schema cũ, chạy lại phần publication trong `supabase/schema.sql` hoặc bật replication cho ba bảng trong Database → Publications.
 4. Lấy Project URL và anon/public key từ phần API settings.
 5. Gán vào `.env.local`, rồi restart server:
 
