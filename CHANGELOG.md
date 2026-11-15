@@ -2,6 +2,12 @@
 
 Các thay đổi đáng chú ý của dự án được ghi tại đây.
 
+## [Unreleased]
+
+### Changed
+
+- Đổi tên hiển thị của website thành “KU ơi, mình đi đâu thế”.
+
 ## [1.0.0] - 2026-11-15
 
 ### Added

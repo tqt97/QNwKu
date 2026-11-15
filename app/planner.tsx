@@ -99,7 +99,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
   const visiblePlaces = tab === 'home' ? data.places.slice(0, 3) : data.places;
 
   return <main className="app-shell">
-    <header className="topbar"><a href="#home" className="brand"><span className="brand-mark"><Heart size={19} fill="currentColor" /></span><span>nhà của tụi mình<small>our little love notes</small></span></a><span className="topbar-note"><Sparkles size={15}/> một góc nhỏ của hai đứa</span></header>
+    <header className="topbar"><a href="#home" className="brand"><span className="brand-mark"><Heart size={19} fill="currentColor" /></span><span>KU ơi, mình đi đâu thế<small>our little love notes</small></span></a><span className="topbar-note"><Sparkles size={15}/> một góc nhỏ của hai đứa</span></header>
 
     <div className="layout" id="home">
       <aside className="side-intro"><div className="sticker">♡</div><p className="eyebrow">A LITTLE PLACE FOR US</p><h1>Những ngày<br/>mình mong chờ</h1><p className="intro-copy">Lưu lại những nơi muốn đến, những món muốn thử và mọi điều nho nhỏ trước ngày gặp nhau.</p><div className="side-note"><span>💌</span><p>“Đi đâu cũng được,<br/>miễn là đi cùng nhau.”</p></div><span className="side-flower">✿</span></aside>

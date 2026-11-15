@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Nhà của tụi mình ♡',
+  title: 'KU ơi, mình đi đâu thế',
   description: 'Một góc nhỏ để đếm ngày gặp nhau, lưu quán xinh và chuẩn bị những điều đáng nhớ.',
 };
 
