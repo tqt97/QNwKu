@@ -54,6 +54,10 @@ h1,h2,h3{font-family:var(--font-heading);color:var(--text-primary);line-height:1
 .place-actions-menu button{display:block;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:8px;background:transparent;text-align:left;color:var(--text-primary);font-size:var(--type-sm)}
 .place-actions-menu button:hover{background:var(--pink-light)}
 :where(button,a,input,textarea,select,[tabindex]):focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px}
+.event-copy p{white-space:normal;overflow:visible;text-overflow:clip;flex-wrap:wrap;gap:var(--space-3)}
+.event-meta-item{display:inline-flex;align-items:center;gap:var(--space-1);min-width:0}
+.event-meta-item svg{flex:none}
+@media(max-width:680px){.event-row{min-height:78px}.event-copy p{align-items:flex-start;flex-direction:column;gap:var(--space-1)}.event-meta-item{font-size:var(--type-xs);overflow-wrap:anywhere}}
 
 /* Keep the soft palette while giving secondary copy enough contrast to read. */
 .brand small,.topbar-note,.intro-copy,.hero-date,.time-unit span,.hero-bottom,.section-heading .eyebrow,.event-datebox,.event-copy p,.progress-label,.place-area,.footer-note{color:#765f6c}

@@ -17,6 +17,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Làm nút thêm trên thanh điều hướng mobile mở đúng loại nội dung theo tab hiện tại.
 - Bổ sung accessible name cho nút thêm và giữ nhãn hiển thị trên phần lớn kích thước mobile.
 - Đưa sửa/xóa địa điểm vào menu thao tác dùng được trên cảm ứng và thêm focus ring cho bàn phím.
+- Tách thời gian và địa điểm sự kiện thành hai dòng dễ đọc trên màn hình nhỏ.
 
 ## [1.0.0] - 2026-11-15
 
