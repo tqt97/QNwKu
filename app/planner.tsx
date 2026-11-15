@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { CalendarDays, Check, ChevronDown, ChevronRight, Clock3, Coffee, Heart, MapPin, Plus, Sparkles, Trash2, X } from 'lucide-react';
 import type { AppData, ChecklistItem, EventItem, Place } from '@/lib/types';
 import { dateToLocalInput, formatAppDateTime, formatAppDay, formatAppMonth, formatAppTime, localInputToISO } from '@/lib/dates';
@@ -16,6 +17,17 @@ function countdown(date: string, now: number) {
   return { days: Math.floor(seconds / 86400), hours: Math.floor((seconds % 86400) / 3600), minutes: Math.floor((seconds % 3600) / 60), seconds: seconds % 60, passed: new Date(date).getTime() < now };
 }
 
+function handleDialogKeyboard(event: ReactKeyboardEvent<HTMLElement>, close: () => void) {
+  if (event.key === 'Escape') { event.preventDefault(); close(); return; }
+  if (event.key !== 'Tab') return;
+  const focusable = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')).filter(element => !element.hasAttribute('hidden') && element.getAttribute('aria-hidden') !== 'true');
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+}
+
 export default function Planner({ initialData, initialNow, connectionError }: { initialData: AppData; initialNow: number; connectionError: string }) {
   const [data, setData] = useState(initialData);
   const [now, setNow] = useState(initialNow);
@@ -29,9 +41,15 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
   const [openPlaceActions, setOpenPlaceActions] = useState<string | null>(null);
   const [openEventActions, setOpenEventActions] = useState<string | null>(null);
   const [showAddPicker, setShowAddPicker] = useState(false);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 3000); return () => clearTimeout(timer); }, [toast]);
+  useEffect(() => {
+    if (kind || showAddPicker || !returnFocusRef.current) return;
+    returnFocusRef.current.focus();
+    returnFocusRef.current = null;
+  }, [kind, showAddPicker]);
   useEffect(() => {
     if (!openPlaceActions && !openEventActions) return;
     const closeOnOutsidePress = (event: PointerEvent) => {
@@ -57,6 +75,10 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
   const upcoming = useMemo(() => data.events.filter(e => new Date(e.starts_at).getTime() >= now).sort((a,b) => +new Date(a.starts_at) - +new Date(b.starts_at)), [data.events, now]);
   const featured = upcoming[0] ?? [...data.events].sort((a,b) => +new Date(b.starts_at) - +new Date(a.starts_at))[0];
   const clock = featured ? countdown(featured.starts_at, now) : null;
+  const visibleEvents = useMemo(() => {
+    const sorted = [...data.events].sort((a,b) => +new Date(a.starts_at) - +new Date(b.starts_at));
+    return tab === 'home' ? sorted.filter(event => new Date(event.starts_at).getTime() >= now) : sorted;
+  }, [data.events, now, tab]);
 
   async function saveItem() {
     if (!kind) return;
@@ -86,7 +108,14 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
   }
 
   function closeForm() { setKind(null); setEditing(null); setForm({}); }
+  function rememberDialogFocus() {
+    const active = document.activeElement;
+    if (!(active instanceof HTMLElement)) return;
+    const menu = active.closest('.place-actions-menu');
+    returnFocusRef.current = menu?.parentElement?.querySelector<HTMLElement>('button[aria-controls]') ?? active;
+  }
   function openCreate(nextKind: Exclude<FormKind, null>, eventId = '') {
+    if (!showAddPicker) rememberDialogFocus();
     setEditing(null);
     setForm(nextKind === 'event' ? { ...blankEvent } : nextKind === 'place' ? { ...blankPlace, event_id: eventId } : { ...blankCheck, event_id: eventId });
     setKind(nextKind);
@@ -96,6 +125,7 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
     openCreate(nextKind);
   }
   function openEdit(nextKind: Exclude<FormKind, null>, item: EventItem | Place | ChecklistItem) {
+    rememberDialogFocus();
     setEditing(item.id);
     const values = { ...item } as unknown as Record<string, unknown>;
     if (nextKind === 'event') values.starts_at = dateToLocalInput(String(values.starts_at));
@@ -162,6 +192,7 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
       <aside className="side-intro"><div className="sticker">♡</div><h1>Những ngày<br/>mình mong chờ</h1><p className="intro-copy">Lưu lại những nơi muốn đến, những món muốn thử và mọi điều nho nhỏ trước ngày gặp nhau.</p><div className="side-note"><span>💌</span><p>“Đi đâu cũng được,<br/>miễn là đi cùng nhau.”</p></div><span className="side-flower">✿</span></aside>
 
       <section className="content">
+        <div className="mobile-welcome"><h1>Những ngày mình mong chờ</h1></div>
         {connectionError && <div className="connection-warning">Chưa đọc được dữ liệu Supabase: {connectionError}</div>}
         {tab !== 'places' && <section className="hero-card">
           <div className="hero-sparkle sparkle-one">✦</div><div className="hero-sparkle sparkle-two">✧</div>
@@ -174,9 +205,9 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
 
         {(tab === 'home' || tab === 'events') && <section className="section-block" id="upcoming-events">
           <div className="section-heading"><div><p className="eyebrow">LỊCH HẸN DỄ THƯƠNG</p><h2>{tab === 'events' ? 'Tất cả sự kiện' : 'Những dịp sắp tới'}</h2></div><button className="add-button" aria-label="Thêm sự kiện" onClick={() => openCreate('event')}><Plus size={17}/><span>Thêm sự kiện</span></button></div>
-          <div className="event-list">{data.events.length ? data.events.map((event,index) => <article className={`event-row ${index === 0 ? 'event-row-featured' : ''}`} key={event.id}>
+          <div className="event-list">{visibleEvents.length ? visibleEvents.map((event,index) => <article className={`event-row ${index === 0 ? 'event-row-featured' : ''}`} key={event.id}>
             <div className="event-datebox"><span>{formatAppMonth(event.starts_at)}</span><strong>{formatAppDay(event.starts_at)}</strong></div><div className="event-copy"><h3>{event.title}</h3><p><span className="event-meta-item"><Clock3 size={13}/>{formatAppTime(event.starts_at)}</span><span className="event-meta-item"><MapPin size={13}/>{event.location || 'Chưa có địa điểm'}</span></p></div><div className="event-actions-root" data-actions-root><button type="button" className="event-more" data-actions-root aria-label={`Thao tác với ${event.title}`} aria-expanded={openEventActions===event.id} aria-controls={`event-actions-${event.id}`} onClick={()=>{setOpenPlaceActions(null);setOpenEventActions(current=>current===event.id?null:event.id)}}>···</button><div className="place-actions-menu event-actions-menu" data-actions-root id={`event-actions-${event.id}`} hidden={openEventActions!==event.id}><button type="button" onClick={()=>{setOpenEventActions(null);openEdit('event',event)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenEventActions(null);void deleteItem('event',event)}}>Xóa mục</button></div></div>
-          </article>) : <p className="empty-state">Chưa có lịch hẹn nào. Mình tạo chiếc đầu tiên nha ♡</p>}</div>
+          </article>) : <p className="empty-state">{tab === 'home' && data.events.length ? 'Chưa có lịch hẹn sắp tới. Mình lên kèo mới nha ♡' : 'Chưa có lịch hẹn nào. Mình tạo chiếc đầu tiên nha ♡'}</p>}</div>
         </section>}
 
 
@@ -200,11 +231,11 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
       </section>
     </div>
 
-    <nav className="mobile-nav" aria-label="Điều hướng"><button className={tab==='home'?'nav-active':''} onClick={()=>setTab('home')}><Heart size={18}/><span>Nhà mình</span></button><button className={tab==='events'?'nav-active':''} onClick={()=>setTab('events')}><CalendarDays size={18}/><span>Sự kiện</span></button><button className={tab==='places'?'nav-active':''} onClick={()=>setTab('places')}><MapPin size={18}/><span>Địa điểm</span></button><button className="nav-add" onClick={()=>setShowAddPicker(true)}><Plus size={20}/><span>Thêm mới</span></button></nav>
+    <nav className="mobile-nav" aria-label="Điều hướng"><button className={tab==='home'?'nav-active':''} aria-current={tab==='home'?'page':undefined} onClick={()=>setTab('home')}><Heart size={18}/><span>Nhà mình</span></button><button className={tab==='events'?'nav-active':''} aria-current={tab==='events'?'page':undefined} onClick={()=>setTab('events')}><CalendarDays size={18}/><span>Sự kiện</span></button><button className={tab==='places'?'nav-active':''} aria-current={tab==='places'?'page':undefined} onClick={()=>setTab('places')}><MapPin size={18}/><span>Địa điểm</span></button><button className="nav-add" onClick={event=>{returnFocusRef.current=event.currentTarget;setShowAddPicker(true)}}><Plus size={20}/><span>Thêm mới</span></button></nav>
 
-    {showAddPicker&&<div className="modal-backdrop add-picker-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setShowAddPicker(false)}}><section className="form-modal add-picker" role="dialog" aria-modal="true" aria-labelledby="add-picker-title" onKeyDown={e=>{if(e.key==='Escape')setShowAddPicker(false)}}><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO KẾ HOẠCH</p><h2 id="add-picker-title">Mình muốn thêm gì nhỉ?</h2></div><button type="button" className="icon-button" onClick={()=>setShowAddPicker(false)} aria-label="Đóng"><X size={19}/></button></div><div className="add-picker-options"><button type="button" className="add-picker-option" autoFocus onClick={()=>chooseAddKind('event')}><CalendarDays size={20}/><span><strong>Sự kiện</strong><small>Ngày hẹn và giờ mình gặp nhau</small></span><ChevronRight size={17}/></button><button type="button" className="add-picker-option" onClick={()=>chooseAddKind('check')}><Check size={20}/><span><strong>Chuẩn bị</strong><small>Việc nhỏ hoặc món cần mang theo</small></span><ChevronRight size={17}/></button><button type="button" className="add-picker-option" onClick={()=>chooseAddKind('place')}><Heart size={20}/><span><strong>Lưu lại</strong><small>Tên món hoặc quán mình muốn thử</small></span><ChevronRight size={17}/></button></div></section></div>}
+    {showAddPicker&&<div className="modal-backdrop add-picker-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setShowAddPicker(false)}}><section className="form-modal add-picker" role="dialog" aria-modal="true" aria-labelledby="add-picker-title" onKeyDown={e=>handleDialogKeyboard(e,()=>setShowAddPicker(false))}><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO KẾ HOẠCH</p><h2 id="add-picker-title">Mình muốn thêm gì nhỉ?</h2></div><button type="button" className="icon-button" onClick={()=>setShowAddPicker(false)} aria-label="Đóng"><X size={19}/></button></div><div className="add-picker-options"><button type="button" className="add-picker-option" autoFocus onClick={()=>chooseAddKind('event')}><CalendarDays size={20}/><span><strong>Sự kiện</strong><small>Ngày hẹn và giờ mình gặp nhau</small></span><ChevronRight size={17}/></button><button type="button" className="add-picker-option" onClick={()=>chooseAddKind('check')}><Check size={20}/><span><strong>Chuẩn bị</strong><small>Việc nhỏ hoặc món cần mang theo</small></span><ChevronRight size={17}/></button><button type="button" className="add-picker-option" onClick={()=>chooseAddKind('place')}><Heart size={20}/><span><strong>Lưu lại</strong><small>Tên món hoặc quán mình muốn thử</small></span><ChevronRight size={17}/></button></div></section></div>}
 
-    {kind&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)closeForm()}}><section className="form-modal" role="dialog" aria-modal="true" aria-labelledby="form-title"><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO THẾ GIỚI NHỎ</p><h2 id="form-title">{editing?'Sửa một chút nha':kind==='event'?'Tạo lịch hẹn mới':kind==='place'?'Lưu điều mình muốn thử':'Thêm việc cần chuẩn bị'}</h2></div><button className="icon-button" onClick={closeForm} aria-label="Đóng"><X size={19}/></button></div>
+    {kind&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)closeForm()}}><section className="form-modal" role="dialog" aria-modal="true" aria-labelledby="form-title" onKeyDown={e=>handleDialogKeyboard(e,closeForm)}><div className="modal-heading"><div><p className="eyebrow">THÊM VÀO THẾ GIỚI NHỎ</p><h2 id="form-title">{editing?'Sửa một chút nha':kind==='event'?'Tạo lịch hẹn mới':kind==='place'?'Lưu điều mình muốn thử':'Thêm việc cần chuẩn bị'}</h2></div><button type="button" className="icon-button" onClick={closeForm} aria-label="Đóng"><X size={19}/></button></div>
       <form onSubmit={e=>{e.preventDefault();void saveItem()}}>
         {kind==='event'&&<><label>Tên sự kiện<input autoFocus placeholder="Ví dụ: Cuối tuần mình đi Đà Lạt" value={form.title??''} onChange={e=>setForm({...form,title:e.target.value})}/></label><label>Ngày và giờ<input type="datetime-local" value={form.starts_at??''} onChange={e=>setForm({...form,starts_at:e.target.value})}/></label><label>Địa điểm<input placeholder="Đà Lạt, quán cà phê..." value={form.location??''} onChange={e=>setForm({...form,location:e.target.value})}/></label><label>Lời nhắn nhỏ<textarea rows={3} placeholder="Điều gì đó muốn nhớ về ngày này..." value={form.note??''} onChange={e=>setForm({...form,note:e.target.value})}/></label></>}
         {kind==='place'&&<label>Món hoặc quán mình muốn thử<input autoFocus placeholder="Matcha latte, quán cà phê cạnh hồ..." value={form.name??''} onChange={e=>setForm({...form,name:e.target.value})}/></label>}

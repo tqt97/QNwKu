@@ -2,7 +2,7 @@
 
 ## Trang chủ
 
-Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa; mũi tên phía dưới cuộn tới lịch. Phần “Những dịp sắp tới” liệt kê sự kiện; mở menu dấu ba chấm như ở danh sách món/quán để chỉnh sửa hoặc xóa từng hàng.
+Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa; mũi tên phía dưới cuộn tới lịch. Phần “Những dịp sắp tới” chỉ liệt kê lịch tương lai theo thời gian gần trước; mở menu dấu ba chấm như ở danh sách món/quán để chỉnh sửa hoặc xóa từng hàng. Tab “Sự kiện” xem cả lịch cũ và lịch sắp tới.
 
 Ngay dưới lịch hẹn là danh sách “Chỗ xinh mình muốn ghé”, tiếp theo là checklist “Chuẩn bị một chút”.
 

@@ -26,7 +26,7 @@ Giúp người dùng thấy ngay sự kiện gần nhất và thời gian còn l
 
 ### Hành vi
 
-- Trang chủ chọn sự kiện có `starts_at` gần nhất nhưng chưa qua.
+- Trang chủ chọn sự kiện có `starts_at` gần nhất nhưng chưa qua; danh sách chỉ hiện lịch sắp tới theo thứ tự thời gian. Tab Sự kiện hiển thị toàn bộ lịch theo thứ tự.
 - Bộ đếm hiển thị ngày, giờ, phút và giây.
 - Ngày giờ nhập và hiển thị theo múi giờ ứng dụng `Asia/Ho_Chi_Minh`; thời điểm SSR được gửi xuống để countdown khớp trong lần hydrate đầu.
 - Hàng sự kiện giữ tháng/ngày trong ô vuông cố định, hiển thị giờ và địa điểm gọn một dòng; menu dấu ba chấm dùng cùng kiểu dọc như danh sách món/quán để mở thao tác sửa/xóa.
@@ -79,6 +79,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Mobile: nội dung một cột, thanh điều hướng cố định dưới màn hình, danh sách món/quán dạng checklist.
 - Ở màn hình rộng đến 760px, giao diện chuyển sang một cột để tránh sidebar làm chật vùng nội dung; hero cho phép nút hành động xuống dòng trên màn hình rất hẹp.
 - Nút dưới cùng luôn là “Thêm mới”, mở bộ chọn Sự kiện / Chuẩn bị / Lưu lại rồi mới mở form tương ứng.
+- Dialog hỗ trợ Escape để đóng, giữ Tab trong modal và trả focus về nút mở; mobile có heading cấp một hiển thị.
 - Nút thêm ở đầu mỗi danh sách có accessible name; nhãn hiển thị cạnh biểu tượng trên mobile khi đủ chỗ và thu gọn ở màn hình rất hẹp.
 - Thao tác sửa/xóa món/quán và sự kiện nằm trong menu dấu ba chấm; menu tự đóng khi chạm ngoài hoặc nhấn Escape.
 - Nút mở menu địa điểm có vùng chạm tối thiểu 44px; input form trên mobile giữ cỡ 16px để tránh tự phóng to khi focus trên iOS.
