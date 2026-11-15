@@ -13,6 +13,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Đồng bộ heading địa điểm thành “Chỗ xinh mình muốn ghé” và cho empty state trải hết chiều rộng lưới.
 - Làm thanh cuộn mảnh và nhẹ hơn trên trình duyệt hỗ trợ tùy chỉnh scrollbar.
 - Chuẩn hóa font nội dung và heading với fallback đa nền tảng, giữ hierarchy heading nhất quán.
+- Tăng cỡ và tương phản chữ phụ, thêm token cho typography/màu/khoảng cách và chuyển sang font hệ thống không cần tải ngoài.
 
 ## [1.0.0] - 2026-11-15
 
