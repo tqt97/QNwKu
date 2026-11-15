@@ -20,6 +20,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Tách thời gian và địa điểm sự kiện thành hai dòng dễ đọc trên màn hình nhỏ.
 - Giữ vùng chạm menu card đủ lớn và cỡ input mobile phù hợp để tránh iOS tự zoom.
 - Giữ header mobile gọn và tăng tương phản cho checklist đã xong, nhãn sự kiện và món muốn thử.
+- Đưa cỡ heading trang, hero, khối, card và modal vào một scale responsive dùng token chung.
 
 ## [1.0.0] - 2026-11-15
 
