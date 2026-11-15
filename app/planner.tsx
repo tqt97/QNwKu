@@ -35,6 +35,19 @@ export default function Planner({ initialData, connectionError }: { initialData:
 
   useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 3000); return () => clearTimeout(timer); }, [toast]);
+  useEffect(() => {
+    if (!openPlaceActions) return;
+    const closeOnOutsidePress = (event: PointerEvent) => {
+      if (!(event.target instanceof Element) || !event.target.closest('[data-actions-root]')) setOpenPlaceActions(null);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpenPlaceActions(null); };
+    document.addEventListener('pointerdown', closeOnOutsidePress);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePress);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [openPlaceActions]);
 
   const upcoming = useMemo(() => data.events.filter(e => new Date(e.starts_at).getTime() >= now).sort((a,b) => +new Date(a.starts_at) - +new Date(b.starts_at)), [data.events, now]);
   const featured = upcoming[0] ?? [...data.events].sort((a,b) => +new Date(b.starts_at) - +new Date(a.starts_at))[0];
@@ -150,7 +163,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
         {(tab === 'home' || tab === 'places') && <section className="section-block places-section">
           <div className="section-heading"><div><p className="eyebrow">MÓN NGON, QUÁN XINH MÌNH MUỐN THỬ</p><h2>Chỗ xinh mình muốn ghé</h2></div><button className="add-button" aria-label="Thêm món hoặc quán muốn thử" onClick={()=>openCreate('place')}><Plus size={17}/><span>Thêm mới</span></button></div>
           <div className="place-list">{visiblePlaces.length ? visiblePlaces.map(place=><article className="place-row" key={place.id}>
-            <button className={`checkbox ${place.visited?'checked':''}`} aria-label={place.visited?`Bỏ đánh dấu đã thử ${place.name}`:`Đánh dấu đã thử ${place.name}`} onClick={()=>void togglePlaceVisited(place)}>{place.visited&&<Check size={14}/>}</button><span className={`place-note-title ${place.visited?'is-done':''}`}>{place.name}</span><button type="button" className="place-more" aria-label={`Thao tác với ${place.name}`} aria-expanded={openPlaceActions===place.id} aria-controls={`place-actions-${place.id}`} onClick={()=>setOpenPlaceActions(current=>current===place.id?null:place.id)}>···</button><div className="place-actions-menu" id={`place-actions-${place.id}`} hidden={openPlaceActions!==place.id}><button type="button" onClick={()=>{setOpenPlaceActions(null);openEdit('place',place)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}}>Xóa mục</button></div>
+            <button className={`checkbox ${place.visited?'checked':''}`} aria-label={place.visited?`Bỏ đánh dấu đã thử ${place.name}`:`Đánh dấu đã thử ${place.name}`} onClick={()=>void togglePlaceVisited(place)}>{place.visited&&<Check size={14}/>}</button><span className={`place-note-title ${place.visited?'is-done':''}`}>{place.name}</span><button type="button" className="place-more" data-actions-root aria-label={`Thao tác với ${place.name}`} aria-expanded={openPlaceActions===place.id} aria-controls={`place-actions-${place.id}`} onClick={()=>setOpenPlaceActions(current=>current===place.id?null:place.id)}>···</button><div className="place-actions-menu" data-actions-root id={`place-actions-${place.id}`} hidden={openPlaceActions!==place.id}><button type="button" onClick={()=>{setOpenPlaceActions(null);openEdit('place',place)}}>Chỉnh sửa</button><button type="button" onClick={()=>{setOpenPlaceActions(null);void deleteItem('place',place)}}>Xóa mục</button></div>
           </article>) : <p className="empty-state">Chưa lưu món hay quán nào. Thấy gì hay thì ghi lại ở đây nha ♡</p>}</div>
           {tab==='home'&&data.places.length>3&&<button className="see-all" onClick={()=>setTab('places')}>Xem tất cả địa điểm <ChevronRight size={15}/></button>}
         </section>}

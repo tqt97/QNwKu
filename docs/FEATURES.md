@@ -47,6 +47,7 @@ Lưu nhanh tên món hoặc quán bằng một dòng text, rồi đánh dấu kh
 
 - Trang chủ hiển thị một số mục đầu; tab địa điểm xem toàn bộ danh sách.
 - Mỗi mục gồm checkbox, text và menu sửa/xóa; form chỉ yêu cầu một dòng text.
+- Menu dấu ba chấm tự đóng khi chạm bên ngoài hoặc nhấn Escape.
 - Heading khu vực là “Chỗ xinh mình muốn ghé”; trạng thái trống chiếm hết chiều rộng danh sách.
 - Các bản ghi cũ vẫn hiển thị theo tên và giữ dữ liệu chi tiết cũ khi chỉ sửa tên.
 
