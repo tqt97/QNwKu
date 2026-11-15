@@ -16,6 +16,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Tăng cỡ và tương phản chữ phụ, thêm token cho typography/màu/khoảng cách và chuyển sang font hệ thống không cần tải ngoài.
 - Làm nút thêm trên thanh điều hướng mobile mở đúng loại nội dung theo tab hiện tại.
 - Bổ sung accessible name cho nút thêm và giữ nhãn hiển thị trên phần lớn kích thước mobile.
+- Đưa sửa/xóa địa điểm vào menu thao tác dùng được trên cảm ứng và thêm focus ring cho bàn phím.
 
 ## [1.0.0] - 2026-11-15
 
