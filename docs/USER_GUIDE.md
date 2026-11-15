@@ -4,6 +4,8 @@
 
 Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút lịch ở góc card mở form sửa; mũi tên phía dưới cuộn tới lịch. Phần “Những dịp sắp tới” liệt kê sự kiện; mở dấu ba chấm ở từng hàng để sửa hoặc xóa.
 
+Ngay dưới lịch hẹn là danh sách “Chỗ xinh mình muốn ghé”, tiếp theo là checklist “Chuẩn bị một chút”.
+
 ## Thêm mới trên điện thoại
 
 1. Nhấn **Thêm mới** ở thanh điều hướng dưới.
