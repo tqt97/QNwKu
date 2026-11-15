@@ -8,6 +8,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 
 - Đổi tên hiển thị của website thành “KU ơi, mình đi đâu thế”.
 - Tăng độ đậm của chữ phụ để dễ đọc hơn trên nền pastel.
+- Giữ tên tháng trên cùng một dòng trong ô ngày ở giao diện mobile.
 
 ## [1.0.0] - 2026-11-15
 
