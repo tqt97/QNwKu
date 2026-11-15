@@ -22,6 +22,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Giữ header mobile gọn và tăng tương phản cho checklist đã xong, nhãn sự kiện và món muốn thử.
 - Đưa cỡ heading trang, hero, khối, card và modal vào một scale responsive dùng token chung.
 - Áp dụng cùng font serif hệ thống cho toàn bộ heading để giữ kiểu chữ đồng bộ khi không tải font ngoài.
+- Tăng tương phản cho trích dẫn ở phần giới thiệu.
 
 ## [1.0.0] - 2026-11-15
 

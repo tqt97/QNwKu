@@ -87,6 +87,7 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Thanh cuộn dùng kiểu mảnh, màu hồng xám nhẹ trên trình duyệt hỗ trợ tùy chỉnh.
 - Typography dùng font hệ thống cục bộ cho nội dung và heading, tránh phụ thuộc vào request Google Fonts; ưu tiên system UI và serif hệ thống trên iOS, Android, Windows và macOS. Cỡ chữ nội dung, từng cấp heading, màu chữ và khoảng cách dùng design tokens chung; chữ phụ thường từ 12px trở lên, màu chữ đạt tương phản rõ trên nền sáng.
 - Ghi chú header tiếp tục ẩn trên mobile để nhường chỗ cho tên web; trạng thái checklist và món muốn thử dùng màu chữ đủ đậm.
+- Trích dẫn ở cột giới thiệu dùng cùng màu chữ phụ có tương phản cao.
 
 ## Quy tắc nghiệp vụ và giới hạn
 
