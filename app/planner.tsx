@@ -23,7 +23,7 @@ function countdown(date: string, now: number) {
 
 export default function Planner({ initialData, connectionError }: { initialData: AppData; connectionError: string }) {
   const [data, setData] = useState(initialData);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(0);
   const [kind, setKind] = useState<FormKind>(null);
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<Record<string, string>>({});
@@ -31,7 +31,7 @@ export default function Planner({ initialData, connectionError }: { initialData:
   const [toast, setToast] = useState('');
   const [tab, setTab] = useState<'home' | 'events' | 'places'>('home');
 
-  useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
+  useEffect(() => { setNow(Date.now()); const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => { if (!toast) return; const timer = setTimeout(() => setToast(''), 3000); return () => clearTimeout(timer); }, [toast]);
 
   const upcoming = useMemo(() => data.events.filter(e => new Date(e.starts_at).getTime() >= now).sort((a,b) => +new Date(a.starts_at) - +new Date(b.starts_at)), [data.events, now]);
