@@ -6,6 +6,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 
 ### Added
 
+- Chuyển cấu hình lịch nhắc từ Cron Jobs legacy sang Vercel Schedules, giữ GET và cập nhật hướng dẫn giới hạn theo plan.
 - Bổ sung hướng dẫn mobile push theo feature detection, nêu rõ điều kiện iOS/iPadOS 16.4+, cài PWA và quyền Notifications/Focus trên hệ điều hành.
 - Thêm gửi push thử trên từng thiết bị và phản hồi lỗi VAPID/subscription; cron nhắc lịch bắt kịp giờ cấu hình trong cửa sổ 5 phút để tránh lỡ phút do độ trễ.
 - Làm nổi bật nút cài PWA bằng gradient hồng pastel, biểu tượng trang trí và trạng thái tương tác/focus rõ ràng.

@@ -96,14 +96,14 @@ npm install
 npm run dev
 ```
 
-Mở `http://localhost:3000` và đăng nhập bằng email/mật khẩu Supabase. Localhost được hỗ trợ để thử service worker/push. `npm run dev` không tự chạy lịch cron; nhắc lịch định kỳ cần Vercel Production hoặc scheduler ngoài gọi `GET /api/cron/reminders` mỗi phút kèm Bearer secret.
+Mở `http://localhost:3000` và đăng nhập bằng email/mật khẩu Supabase. Localhost được hỗ trợ để thử service worker/push. `npm run dev` không tự chạy lịch; nhắc lịch định kỳ cần Vercel Production Schedules hoặc scheduler ngoài gọi `GET /api/cron/reminders` kèm Bearer secret.
 
 ## 8. Cấu hình Vercel
 
 1. Đẩy repository lên GitHub, vào Vercel → **Add New → Project**, import repository và dùng Framework Preset **Next.js**.
 2. Vào **Settings → Environment Variables**. Tạo đủ tám biến ở trên cho **Production**. Bật tùy chọn expose System Environment Variables để app nhận `VERCEL_DEPLOYMENT_ID` và phát hiện bản PWA mới. Thêm Preview/Development nếu cần; nên dùng project/key riêng cho môi trường thử.
-3. Đảm bảo `CRON_SECRET` có trong Production. [`vercel.json`](../vercel.json) gọi `/api/cron/reminders` mỗi phút; route yêu cầu Bearer secret và dùng service role ở server.
-4. Deploy Production. Cron chạy trên deployment Production. Deployment ID của Vercel cũng được dùng để phát hiện bản PWA mới; với hosting khác, đặt `NEXT_PUBLIC_APP_VERSION` bằng commit/release ID mới ở mỗi lần deploy. Lịch cron mỗi phút yêu cầu plan hỗ trợ tần suất đó; xem [giới hạn và giá Cron Jobs của Vercel](https://vercel.com/docs/cron-jobs/usage-and-pricing). Nếu plan không chạy được mỗi phút, dùng plan phù hợp hoặc scheduler khác gọi endpoint mỗi phút.
+3. Đảm bảo `CRON_SECRET` có trong Production. [`vercel.json`](../vercel.json) khai báo schedule `planner-reminders`, gọi `/api/cron/reminders` bằng GET mỗi phút; route yêu cầu Bearer secret và dùng service role ở server.
+4. Deploy Production. Schedule chạy trên deployment Production. Deployment ID của Vercel cũng được dùng để phát hiện bản PWA mới; với hosting khác, đặt `NEXT_PUBLIC_APP_VERSION` bằng commit/release ID mới ở mỗi lần deploy. Lịch mỗi phút yêu cầu Vercel Pro/Enterprise; Hobby chỉ hỗ trợ Schedules từ mỗi 15 phút với jitter 15 phút, không đáp ứng thời gian nhắc tùy chọn. Xem [giới hạn Vercel Schedules](https://vercel.com/docs/schedules/limits). Nếu dùng Hobby, nâng plan hoặc dùng scheduler ngoài gọi endpoint đủ thường xuyên.
 5. Sau khi đổi environment variables, tạo deployment mới để áp dụng giá trị mới.
 
 ## 9. Bật PWA và kiểm tra nhắc lịch
@@ -112,7 +112,7 @@ Mở `http://localhost:3000` và đăng nhập bằng email/mật khẩu Supabas
 2. Mở **Nhắc lịch**, đặt một khung giờ gần hiện tại. Giờ nhắc dùng chung; push subscription riêng trên từng thiết bị.
 3. Cho phép Notifications, nhấn **Bật thông báo**. Lặp lại trên mỗi thiết bị cần nhận push.
 4. Nhấn **Gửi thử** ngay trong mục nhắc lịch để xác nhận subscription, VAPID và quyền hiển thị notification trên thiết bị.
-5. Tạo một sự kiện tương lai và chờ khung giờ đã đặt. Nếu gửi thử thành công nhưng nhắc lịch không tới, kiểm tra Vercel Cron deployment/logs, `CRON_SECRET`, sự kiện tương lai và giờ nhắc. Worker bắt kịp giờ đã đặt nếu cron chậm tối đa 5 phút.
+5. Tạo một sự kiện tương lai và chờ khung giờ đã đặt. Nếu gửi thử thành công nhưng nhắc lịch không tới, kiểm tra Vercel Schedules/execution logs, `CRON_SECRET`, sự kiện tương lai và giờ nhắc. Worker bắt kịp giờ đã đặt nếu scheduler chậm tối đa 5 phút.
 6. Trên iPhone/iPad, dùng Safari → **Chia sẻ → Thêm vào Màn hình chính**, mở biểu tượng vừa cài rồi bật push.
 
 Push chỉ gửi khi có sự kiện tương lai gần nhất. Không có sự kiện tương lai thì cron bỏ qua lượt đó. Planner vẫn cần mạng để tải, đăng nhập và đồng bộ; PWA không hỗ trợ thao tác offline.
