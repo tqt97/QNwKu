@@ -26,6 +26,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 
 ### Fixed
 
+- Đồng bộ cách tính thời gian trong push với đồng hồ đếm ngược; bỏ làm tròn lên theo ngày khiến thông báo báo sớm thêm một ngày.
 - Giới hạn việc dọn cache trong service worker vào cache namespace của planner, tránh xóa cache khác cùng origin.
 - Thêm màn hình khóa toàn trang tông pastel; nội dung planner chỉ được truy vấn sau khi server xác minh phiên và membership.
 - Thêm hướng dẫn cấu hình một tài khoản dùng chung, mật khẩu riêng mạnh và cấp quyền database; bỏ dữ liệu demo khỏi luồng trang.

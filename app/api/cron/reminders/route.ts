@@ -18,6 +18,17 @@ function localParts(date: Date) {
   return { date: `${get('year')}-${get('month')}-${get('day')}`, time: `${get('hour')}:${get('minute')}` };
 }
 
+function formatTimeRemaining(startsAt: Date, now: Date) {
+  const totalMinutes = Math.max(0, Math.floor((startsAt.getTime() - now.getTime()) / 60_000));
+  if (totalMinutes === 0) return 'dưới 1 phút';
+  const days = Math.floor(totalMinutes / 1_440);
+  const hours = Math.floor((totalMinutes % 1_440) / 60);
+  const minutes = totalMinutes % 60;
+  return [days > 0 ? `${days} ngày` : '', hours > 0 ? `${hours} giờ` : '', minutes > 0 ? `${minutes} phút` : '']
+    .filter(Boolean)
+    .join(' ');
+}
+
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
   if (!secret || request.headers.get('authorization') !== `Bearer ${secret}`) return new NextResponse('Unauthorized', { status: 401 });
@@ -50,7 +61,7 @@ export async function GET(request: Request) {
   if (!subscriptions?.length) return NextResponse.json({ sent: 0, skipped: true, localDate, localTime, scheduledSlots, reason: 'no-push-subscriptions' });
   setVapidDetails(subject, publicKey, privateKey);
   const starts = new Date(event.starts_at);
-  const days = Math.max(0, Math.ceil((starts.getTime() - now.getTime()) / 86_400_000));
+  const remaining = formatTimeRemaining(starts, now);
   let sent = 0;
   const failures: string[] = [];
   for (const slot of scheduledSlots) {
@@ -59,7 +70,7 @@ export async function GET(request: Request) {
       const claim = await db.from('reminder_deliveries').insert({ subscription_id: subscription.id, event_id: event.id, local_date: slot.date, reminder_time: slot.time }).select('id').maybeSingle();
       if (claim.error?.code === '23505') continue;
       if (claim.error || !claim.data) { failures.push('delivery-claim'); continue; }
-      const payload = JSON.stringify({ title: 'Một ngày mình mong chờ ♡', body: `${event.title} — còn ${days} ngày nữa`, url: '/#upcoming-events', tag: `event-${event.id}-${slot.date}-${slot.time}` });
+      const payload = JSON.stringify({ title: 'Một ngày mình mong chờ ♡', body: `${event.title} — còn ${remaining} nữa`, url: '/#upcoming-events', tag: `event-${event.id}-${slot.date}-${slot.time}` });
       try {
         await sendNotification({ endpoint: subscription.endpoint, keys: { p256dh: subscription.p256dh, auth: subscription.auth } }, payload);
         sent += 1;
