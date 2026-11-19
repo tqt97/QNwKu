@@ -57,7 +57,7 @@ Tạo cặp VAPID bằng `npx web-push generate-vapid-keys`; đặt public key �
 7. Deploy Production để Vercel đăng ký schedule `planner-reminders` từ `vercel.json`; cài PWA và bật thông báo riêng trên từng thiết bị.
 8. Thử khung giờ gần hiện tại với một sự kiện tương lai, rồi kiểm tra log function và push trên thiết bị; kiểm tra lượt không gửi khi không có sự kiện tương lai.
 
-**Độ chính xác scheduler:** repo dùng Vercel Schedules (thay cho cấu hình Cron Jobs legacy) để gọi `GET /api/cron/reminders` mỗi phút. Schedules Pro/Enterprise hỗ trợ mỗi phút với jitter mặc định 1 phút; Hobby tối thiểu 15 phút và có jitter 15 phút, không đủ chính xác cho các giờ nhắc tùy chọn của app. Nếu project dùng Hobby, cần nâng plan hoặc chuyển endpoint sang scheduler ngoài có độ chính xác tương đương. Xem [giới hạn Vercel Schedules](https://vercel.com/docs/schedules/limits) và [hướng dẫn migrate](https://vercel.com/docs/schedules/migrate-from-cron-jobs).
+**Độ chính xác scheduler:** repo đặt Vercel Schedule `*/15 * * * *` để tương thích Hobby và gọi `GET /api/cron/reminders`. Hobby chạy theo cửa sổ jitter 15 phút; worker bắt kịp khung giờ trong 30 phút gần nhất nên push có thể đến trễ tối đa khoảng 30 phút. Pro/Enterprise có thể đổi lịch thành `* * * * *` (jitter mặc định 1 phút) để nhận nhắc gần thời gian đã chọn. Xem [giới hạn Vercel Schedules](https://vercel.com/docs/schedules/limits) và [hướng dẫn migrate](https://vercel.com/docs/schedules/migrate-from-cron-jobs).
 
 Khi sửa environment variables, tạo deployment mới để áp dụng giá trị mới.
 

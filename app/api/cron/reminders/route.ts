@@ -4,7 +4,7 @@ import { sendNotification, setVapidDetails } from 'web-push';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
-const CATCH_UP_MINUTES = 5;
+const CATCH_UP_MINUTES = 30;
 
 type EventRow = { id: string; title: string; starts_at: string };
 type SubscriptionRow = { id: string; endpoint: string; p256dh: string; auth: string };

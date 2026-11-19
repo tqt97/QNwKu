@@ -119,7 +119,7 @@ Cài planner lên màn hình chính để mở nhanh và nhận push nhắc các
 
 ### Hành vi thông báo
 
-- Tác vụ server chạy mỗi phút; nếu cron đến trễ, tác vụ bắt kịp các khung giờ trong 5 phút gần nhất. Claim database duy nhất theo thiết bị/sự kiện/ngày/giờ ngăn gửi lặp khi cron chạy lại.
+- Vercel Schedule mặc định chạy mỗi 15 phút để tương thích Hobby; worker bắt kịp các khung giờ trong 30 phút gần nhất. Claim database duy nhất theo thiết bị/sự kiện/ngày/giờ ngăn gửi lặp khi schedule chạy lại. Trên Hobby push có thể đến trễ khoảng 30 phút; Pro/Enterprise có thể cấu hình lịch mỗi phút.
 - Chỉ gửi khi có ít nhất một sự kiện tương lai; nội dung nhắc sự kiện tương lai gần nhất và số ngày còn lại.
 - Mỗi sự kiện, khung giờ, ngày địa phương và subscription nhận tối đa một push; endpoint hết hạn được dọn khỏi danh sách.
 - Nếu không có sự kiện tương lai, bỏ qua lượt gửi. Countdown trên trang tiếp tục cập nhật tại máy; Supabase Realtime đồng bộ sự kiện khi trang đang mở, còn khi quay lại app sẽ tải snapshot mới.

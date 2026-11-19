@@ -2,7 +2,7 @@
   "schedules": {
     "planner-reminders": {
       "path": "/api/cron/reminders",
-      "schedule": "* * * * *",
+      "schedule": "*/15 * * * *",
       "requestMethod": "GET"
     }
   }

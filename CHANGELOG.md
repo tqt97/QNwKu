@@ -7,8 +7,9 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 ### Added
 
 - Chuyển cấu hình lịch nhắc từ Cron Jobs legacy sang Vercel Schedules, giữ GET và cập nhật hướng dẫn giới hạn theo plan.
+- Điều chỉnh schedule mặc định thành 15 phút cho Vercel Hobby; worker bắt kịp khung giờ trong 30 phút để push vẫn hoạt động dù scheduler có jitter.
 - Bổ sung hướng dẫn mobile push theo feature detection, nêu rõ điều kiện iOS/iPadOS 16.4+, cài PWA và quyền Notifications/Focus trên hệ điều hành.
-- Thêm gửi push thử trên từng thiết bị và phản hồi lỗi VAPID/subscription; cron nhắc lịch bắt kịp giờ cấu hình trong cửa sổ 5 phút để tránh lỡ phút do độ trễ.
+- Thêm gửi push thử trên từng thiết bị và phản hồi lỗi VAPID/subscription; worker nhắc lịch bắt kịp giờ cấu hình theo cửa sổ 30 phút của scheduler.
 - Làm nổi bật nút cài PWA bằng gradient hồng pastel, biểu tượng trang trí và trạng thái tương tác/focus rõ ràng.
 - Bổ sung README mô tả PWA/nhắc lịch và hướng dẫn cài đặt đầy đủ gồm cách lấy Supabase/VAPID keys, tạo cron secret, cấu hình local và Vercel.
 - Thêm thông báo cập nhật PWA theo revision deployment: kiểm tra service worker mới, chờ người dùng xác nhận, kích hoạt phiên bản mới và tải lại app; lần cài đầu kích hoạt tự động.

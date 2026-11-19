@@ -42,7 +42,7 @@ Middleware làm mới cookie session. Trước khi tải dữ liệu planner, se
 - `app/api/reminders/test/route.ts`: gửi push thử ngay tới subscription thuộc user hiện tại để tách lỗi thiết bị/VAPID khỏi lịch cron.
 - `app/api/cron/reminders/route.ts`: kiểm tra bearer secret, đọc giờ + sự kiện qua service role, claim lượt gửi idempotent và gửi Web Push.
 - `public/manifest.webmanifest`, `public/sw.js`, `public/icon.svg`, `public/icon-maskable.svg` và PNG: metadata PWA, biểu tượng cài đặt có vùng an toàn riêng và xử lý push/click; service worker chỉ cache manifest/icon. `assets/icons/apple-touch-icon.svg` là vector nguồn cho PNG iOS vuông nền đặc.
-- `vercel.json`: gọi cron mỗi phút để có độ chính xác theo phút cho khung giờ do người dùng đặt.
+- `vercel.json`: khai báo Vercel Schedule gọi route nhắc lịch mỗi 15 phút để tương thích Hobby; route có cửa sổ bắt kịp 30 phút.
 - `lib/supabase.ts`: URL/key Supabase và email đăng nhập lấy từ env.
 - `lib/data.ts`: đọc dữ liệu qua client gắn với session người dùng.
 - `lib/types.ts`: kiểu dữ liệu giao diện.
@@ -120,7 +120,7 @@ API trả JSON cho kết quả/error; DELETE thành công trả 204. Không có 
 
 - Web client chỉ gửi public VAPID key; private key và `SUPABASE_SERVICE_ROLE_KEY` chỉ có ở môi trường server. User APIs xác thực session/membership và dùng RLS.
 - Lịch là cấu hình toàn cục một hàng `reminder_settings`; subscription lưu riêng theo endpoint và user, để user API chỉ xem/xóa thiết bị của chính mình. Worker dùng service role để gửi đến mọi thiết bị đã đăng ký.
-- Vercel Cron gọi endpoint mỗi phút; route chỉ nhận `Authorization: Bearer <CRON_SECRET>`. Bảng `reminder_deliveries` dùng unique key theo thiết bị/sự kiện/ngày local/giờ để tránh gửi lặp khi cron chạy lại.
+- Vercel Schedule gọi endpoint mỗi 15 phút; route chỉ nhận `Authorization: Bearer <CRON_SECRET>`. Bảng `reminder_deliveries` dùng unique key theo thiết bị/sự kiện/ngày local/giờ để tránh gửi lặp khi schedule chạy lại.
 - Lượt nhắc chọn sự kiện tương lai gần nhất. Nếu không có sự kiện sắp tới thì không gửi. Delivery claim bị xóa nếu dịch vụ push trả lỗi để lần cron sau có thể thử lại.
 - PWA shell không phải offline data cache; page/auth/CRUD vẫn cần mạng.
 
