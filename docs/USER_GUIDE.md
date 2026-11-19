@@ -8,6 +8,18 @@ Card lớn phía trên hiển thị sự kiện gần nhất và countdown. Nút
 
 Khi kết nối Supabase, thay đổi từ thiết bị khác sẽ tự hiện trong danh sách mà không cần tải lại trang. Trạng thái trên thanh đầu trang cho biết đang kết nối, đã đồng bộ trực tiếp hay đang dùng dữ liệu xem thử.
 
+## Cài ứng dụng và nhắc lịch
+
+Mở **Nhắc lịch** để thêm/xóa các khung giờ (mặc định 07:00, giờ Việt Nam). Đây là cài đặt chung của planner nên thay đổi ở thiết bị nào cũng đồng bộ cho cả hai người. Tối đa 8 giờ mỗi ngày; thông báo chỉ được gửi nếu có sự kiện tương lai và sẽ nhắc lịch gần nhất.
+
+Trong **Thông báo trên thiết bị này**, bật push cho thiết bị hiện tại. Mỗi điện thoại/máy tính cần bật riêng để nhận push trên nhiều thiết bị; tắt tại đây chỉ gỡ thiết bị đang dùng. Trình duyệt sẽ hỏi quyền notification. Sau khi bật, dùng **Gửi thử** để xác nhận thiết bị nhận được push ngay; nếu gửi lỗi, thông báo sẽ hướng dẫn kiểm tra subscription hoặc VAPID. Nếu đã từ chối quyền, mở cài đặt website/Notifications của trình duyệt hoặc cài đặt hệ điều hành, cho phép lại rồi tải lại trang.
+
+Trên iPhone/iPad chạy iOS/iPadOS 16.4 trở lên, dùng Safari → **Chia sẻ** → **Thêm vào Màn hình chính**, mở biểu tượng vừa cài rồi mới bật push bên trong app. Trên Android, dùng trình duyệt hỗ trợ Push API; cho phép Notifications trên cả trình duyệt và hệ điều hành. Chế độ Focus/Không làm phiền có thể ẩn banner dù push đã được gửi.
+
+Khi có phiên bản PWA mới, ứng dụng hiện thông báo **Có phiên bản mới**. Nhấn **Cập nhật ngay** để tải lại app với phiên bản mới; app cũng tự kiểm tra lại khi mở hoặc quay lại màn hình.
+
+PWA mở nhanh và nhận push khi ứng dụng đóng (nếu trình duyệt/hệ điều hành hỗ trợ); bản hiện tại vẫn cần mạng để tải planner và thao tác dữ liệu.
+
 Ngay dưới lịch hẹn là danh sách “Chỗ xinh mình muốn ghé”, tiếp theo là checklist “Chuẩn bị một chút”.
 
 ## Thêm mới trên điện thoại

@@ -7,6 +7,8 @@
 - Server chỉ tải dữ liệu sau khi xác minh user có dòng tương ứng trong `public.planner_members`.
 - API CRUD chạy bằng phiên của người dùng, không dùng `service_role`; Postgres RLS tiếp tục kiểm tra membership cho mọi thao tác và realtime.
 - Quyền `anon`/`public` trên các bảng planner bị thu hồi. Biết URL và anon key không đủ để đọc hay sửa dữ liệu.
+- VAPID private key, `SUPABASE_SERVICE_ROLE_KEY` và `CRON_SECRET` là bí mật server-only; tuyệt đối không thêm tiền tố `NEXT_PUBLIC_`. Chỉ route cron dùng service role và phải xác thực bearer secret; API setting/subscription dùng user session + RLS. User chỉ có thể xóa subscription gắn với chính user id.
+- Cấu hình reminder là một hàng toàn cục cho các thành viên planner; push endpoint/key lưu trong bảng riêng để server gửi đến từng thiết bị. Không ghi nội dung sự kiện nhạy cảm vào URL push.
 
 ## Thiết lập an toàn lần đầu
 

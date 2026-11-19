@@ -4,9 +4,27 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 
 ## [Unreleased]
 
+### Added
+
+- Bổ sung hướng dẫn mobile push theo feature detection, nêu rõ điều kiện iOS/iPadOS 16.4+, cài PWA và quyền Notifications/Focus trên hệ điều hành.
+- Thêm gửi push thử trên từng thiết bị và phản hồi lỗi VAPID/subscription; cron nhắc lịch bắt kịp giờ cấu hình trong cửa sổ 5 phút để tránh lỡ phút do độ trễ.
+- Làm nổi bật nút cài PWA bằng gradient hồng pastel, biểu tượng trang trí và trạng thái tương tác/focus rõ ràng.
+- Bổ sung README mô tả PWA/nhắc lịch và hướng dẫn cài đặt đầy đủ gồm cách lấy Supabase/VAPID keys, tạo cron secret, cấu hình local và Vercel.
+- Thêm thông báo cập nhật PWA theo revision deployment: kiểm tra service worker mới, chờ người dùng xác nhận, kích hoạt phiên bản mới và tải lại app; lần cài đầu kích hoạt tự động.
+- Thêm icon maskable riêng với hình chính nằm trong vùng an toàn; giữ PNG thông thường và Apple touch icon làm biến thể nền tảng.
+- Thêm PWA manifest, biểu tượng và service worker xử lý Web Push cùng thao tác mở planner từ thông báo.
+- Thêm cấu hình nhắc lịch toàn cục trong Supabase, tối đa 8 khung giờ/ngày theo Asia/Ho_Chi_Minh, mặc định 07:00 và đồng bộ qua Realtime.
+- Thêm đăng ký push riêng từng thiết bị và giao diện bật/tắt, hướng dẫn khi quyền notification bị từ chối và cách cài PWA trên iPhone/iPad.
+- Thêm Vercel Cron và Web Push gửi nhắc sự kiện tương lai gần nhất, có idempotency theo thiết bị/sự kiện/ngày/giờ.
+- Cập nhật schema, hướng dẫn bảo mật, triển khai, kiến trúc và nghiệm thu PWA/reminder.
+
 ### Security
 
 - Thay quyền CRUD public bằng Supabase Auth dùng phiên cookie SSR, xác thực membership ở trang và API, cùng RLS chỉ cho tài khoản có trong `planner_members`.
+
+### Fixed
+
+- Giới hạn việc dọn cache trong service worker vào cache namespace của planner, tránh xóa cache khác cùng origin.
 - Thêm màn hình khóa toàn trang tông pastel; nội dung planner chỉ được truy vấn sau khi server xác minh phiên và membership.
 - Thêm hướng dẫn cấu hình một tài khoản dùng chung, mật khẩu riêng mạnh và cấp quyền database; bỏ dữ liệu demo khỏi luồng trang.
 

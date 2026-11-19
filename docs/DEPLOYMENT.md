@@ -19,9 +19,8 @@ npm run dev
 ## Tạo database Supabase
 
 1. Tạo project mới.
-2. Mở SQL Editor và chạy `supabase/schema.sql`.
-3. Kiểm tra Table Editor có bốn bảng: `events`, `places`, `checklist_items`, `planner_members`.
-   Script cũng thêm ba bảng vào publication `supabase_realtime` để danh sách tự cập nhật khi có thay đổi từ thiết bị khác. Nếu database đã chạy schema cũ, chạy lại phần publication trong `supabase/schema.sql` hoặc bật replication cho ba bảng trong Database → Publications.
+2. Mở SQL Editor và chạy `supabase/schema.sql` (khi nâng cấp project hiện có, chạy lại script để tạo các bảng PWA; script giữ nguyên dữ liệu cũ).
+3. Trong Table Editor, kiểm tra có các bảng `events`, `places`, `checklist_items`, `planner_members`, `reminder_settings`, `push_subscriptions` và `reminder_deliveries`. Các bảng cần đồng bộ được thêm vào publication `supabase_realtime`.
 4. Trong Authentication → Users, tạo user email dùng chung; đặt mật khẩu riêng dài, khó đoán. Không dùng ngày sinh hay mã 4 số. Tắt signups công khai nếu không cần.
 5. Cấp membership trong SQL Editor (thay email):
 
@@ -32,22 +31,33 @@ npm run dev
    ```
 
 6. Lấy Project URL và anon/public key từ phần API settings.
-7. Gán ba biến vào `.env.local`, rồi restart server:
+7. Gán các biến vào `.env.local`, rồi restart server:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=PUBLIC_ANON_KEY
 NEXT_PUBLIC_PLANNER_EMAIL=EMAIL_DA_TAO
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=VAPID_PUBLIC_KEY
+VAPID_PRIVATE_KEY=VAPID_PRIVATE_KEY
+VAPID_SUBJECT=mailto:EMAIL_LIEN_HE
+SUPABASE_SERVICE_ROLE_KEY=SERVICE_ROLE_KEY
+CRON_SECRET=CHUOI_BI_MAT_DAI_NGAU_NHIEN
 ```
+
+Tạo cặp VAPID bằng `npx web-push generate-vapid-keys`; đặt public key ở biến `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, private key chỉ ở server. Lấy service role key từ Supabase API settings và **không** đặt prefix `NEXT_PUBLIC_`. `CRON_SECRET` phải là chuỗi bí mật ngẫu nhiên; Vercel dùng nó để gửi header xác thực cron.
 
 ## Deploy Vercel
 
 1. Push source lên GitHub.
 2. Vercel → Add New → Project → import repo.
 3. Framework preset chọn Next.js (thường tự nhận diện).
-4. Khai báo ba biến môi trường Supabase cho Production; Preview/Development tùy cách dùng.
+4. Khai báo đủ biến môi trường theo [hướng dẫn cài đặt](INSTALLATION.md) cho Production; thêm Preview/Development nếu cần.
 5. Deploy và đăng nhập ở màn hình khóa.
 6. Tạo sự kiện thử; xác nhận nó xuất hiện trong Table Editor và đồng bộ sang thiết bị khác.
+7. Deploy Production để Vercel đăng ký cron từ `vercel.json`; cài PWA và bật thông báo riêng trên từng thiết bị.
+8. Thử khung giờ gần hiện tại với một sự kiện tương lai, rồi kiểm tra log function và push trên thiết bị; kiểm tra lượt không gửi khi không có sự kiện tương lai.
+
+**Độ chính xác scheduler:** cần cron mỗi phút để hỗ trợ nhiều khung giờ tùy chỉnh. Theo giới hạn hiện tại, Vercel Pro/Enterprise hỗ trợ lịch mỗi phút; Hobby chỉ cho chạy mỗi ngày với độ chính xác theo giờ, nên không đáp ứng các giờ tùy chọn. Nếu project dùng Hobby, cần nâng plan hoặc chuyển endpoint sang scheduler ngoài có độ chính xác tương đương. [Vercel Cron Jobs: usage and pricing](https://vercel.com/docs/cron-jobs/usage-and-pricing)
 
 Khi sửa environment variables, tạo deployment mới để áp dụng giá trị mới.
 

@@ -28,6 +28,7 @@
 - Mobile-first: điều hướng dưới màn hình nhỏ, form dễ thao tác, layout thích ứng desktop.
 - Màn hình khóa pastel, dùng một tài khoản Supabase Auth chung cho hai thiết bị.
 - RLS chỉ cấp quyền cho user trong `planner_members`; API cũng xác thực session ở server.
+- Có thể cài như PWA và bật Web Push riêng trên từng thiết bị; khung giờ nhắc dùng chung và hỗ trợ tối đa 8 giờ/ngày theo giờ Việt Nam.
 
 Chi tiết: [docs/FEATURES.md](docs/FEATURES.md). Hướng dẫn giao diện: [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
 
@@ -36,6 +37,9 @@ Chi tiết: [docs/FEATURES.md](docs/FEATURES.md). Hướng dẫn giao diện: [d
 ```text
 app/
   api/[table]/route.ts   API CRUD kiểm tra session và membership
+  api/reminders/         API giờ nhắc, đăng ký và gửi thử Web Push
+  api/cron/reminders/    Worker gửi nhắc lịch theo CRON_SECRET
+  components/            Các hàng planner, nhắc lịch và thông báo cập nhật PWA
   globals.css            Giao diện responsive và theme
   layout.tsx             Metadata và root layout
   page.tsx               Tải dữ liệu phía server
@@ -46,11 +50,18 @@ lib/
   types.ts               Kiểu dữ liệu ứng dụng
 supabase/
   schema.sql             Bảng, membership, index và RLS policies
+public/
+  manifest.webmanifest   Metadata PWA
+  sw.js                  Nhận Web Push và mở planner
+  icon-maskable.svg      Icon PWA có vùng an toàn cho launcher
+assets/icons/
+  apple-touch-icon.svg   Nguồn vector cho icon iOS
 docs/
   ARCHITECTURE.md        Kiến trúc, luồng dữ liệu, mô hình dữ liệu
   FEATURES.md            Đặc tả tính năng và hành vi
   USER_GUIDE.md          Hướng dẫn dùng giao diện
   DEPLOYMENT.md          Cấu hình Supabase và Vercel
+  INSTALLATION.md        Cài đặt, cách lấy key và cấu hình môi trường
   SECURITY.md            Quyền public và kế hoạch chuyển sang auth
 CHANGELOG.md             Lịch sử thay đổi
 ```
@@ -75,7 +86,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Mở [http://localhost:3000](http://localhost:3000). Cần cấu hình Supabase Auth để đăng nhập và mở planner.
+Mở [http://localhost:3000](http://localhost:3000). Cần cấu hình Supabase Auth để đăng nhập và mở planner. Xem [Hướng dẫn cài đặt](docs/INSTALLATION.md) để tạo project, lấy các key Supabase/VAPID, thiết lập database và cấu hình Vercel Cron.
 
 ```bash
 npm run dev        # môi trường phát triển
@@ -84,44 +95,19 @@ npm run build      # production build
 npm start          # chạy production build sau khi build
 ```
 
-## Cấu hình Supabase
+## Cấu hình Supabase và key
 
-1. Tạo project Supabase.
-2. Trong **SQL Editor**, chạy nội dung `supabase/schema.sql`.
-3. Tạo một user email trong Supabase Authentication → Users, đặt mật khẩu riêng dài và khó đoán (không dùng ngày sinh/mã 4 số). Cấp membership trong SQL Editor:
-
-   ```sql
-   insert into public.planner_members (user_id)
-   select id from auth.users where email = 'EMAIL_DA_TAO'
-   on conflict (user_id) do nothing;
-   ```
-
-4. Từ API settings, lấy **Project URL** và **anon/public key**.
-5. Điền `.env.local`:
-
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
-   NEXT_PUBLIC_PLANNER_EMAIL=EMAIL_DA_TAO
-   ```
-
-6. Khởi động lại dev server. Khi đăng nhập thành công, ứng dụng đọc ba bảng planner.
+Làm theo [hướng dẫn cài đặt đầy đủ](docs/INSTALLATION.md) để tạo project, áp dụng schema, cấp membership, lấy Supabase/VAPID keys và cấu hình `.env.local`.
 
 ## Deploy Vercel
 
-1. Đưa source lên repository GitHub.
-2. Trên Vercel chọn **Add New → Project**, import repository.
-3. Thêm `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` và `NEXT_PUBLIC_PLANNER_EMAIL` vào Environment Variables.
-4. Chọn **Deploy**. Vercel dùng lệnh mặc định `next build`.
-5. Push commit mới lên nhánh production để tạo deployment tiếp theo.
-
-Xem [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) để biết chi tiết và cách xử lý lỗi cấu hình.
+Xem [hướng dẫn cài đặt](docs/INSTALLATION.md) để cấu hình đủ biến môi trường, cron nhắc lịch và triển khai Production; [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) có thêm lỗi thường gặp.
 
 ## Quyền truy cập và dữ liệu
 
 Ứng dụng yêu cầu đăng nhập Supabase Auth. Server/API xác minh JWT và membership; Postgres RLS chặn quyền `anon` và chỉ cho user trong `planner_members` thao tác. Hai thiết bị dùng chung một tài khoản để cùng xem và cập nhật dữ liệu.
 
-Chỉ dùng Supabase anon/public key trong ứng dụng. **Không dùng `service_role` key** ở trình duyệt, biến `NEXT_PUBLIC_*`, hoặc commit vào repository. Xem [docs/SECURITY.md](docs/SECURITY.md) để thiết lập user/membership và vận hành.
+Browser dùng Supabase anon/public key cùng RLS. `service_role` chỉ được dùng trong route cron phía server; **không bao giờ** đưa key này vào trình duyệt, biến `NEXT_PUBLIC_*` hoặc Git. Xem [docs/SECURITY.md](docs/SECURITY.md) để biết thêm.
 
 ## Tài liệu chi tiết
 
@@ -129,12 +115,13 @@ Chỉ dùng Supabase anon/public key trong ứng dụng. **Không dùng `service
 - [Hướng dẫn sử dụng](docs/USER_GUIDE.md)
 - [Kiến trúc và mô hình dữ liệu](docs/ARCHITECTURE.md)
 - [Cấu hình Supabase và deploy Vercel](docs/DEPLOYMENT.md)
+- [Cài đặt, lấy key và cấu hình đầy đủ](docs/INSTALLATION.md)
 - [Quyền truy cập và bảo mật](docs/SECURITY.md)
 - [Lịch sử thay đổi](CHANGELOG.md)
 
-## Kiểm tra build
+## Các lệnh dự án
 
 ```bash
-npm run typecheck
-npm run build
+npm run typecheck  # kiểm tra TypeScript
+npm run build      # production build
 ```

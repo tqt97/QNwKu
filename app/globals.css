@@ -108,12 +108,54 @@ a{color:inherit;text-decoration:none}
 .primary-button:disabled{opacity:.65;cursor:wait}
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:20;padding:12px 17px;background:#634859;color:#fff;border-radius:12px;box-shadow:0 12px 30px rgba(70,44,59,.2);font-size:11px;max-width:calc(100% - 28px);text-align:center;animation:toast-in .2s ease-out}
 
+/* Shared reminder controls and installable PWA surface. */
+.reminder-settings{margin:0 0 20px;border:1px solid #f0e1e8;border-radius:15px;background:rgba(255,255,255,.8);color:var(--text-primary)}
+.reminder-settings summary{list-style:none;display:flex;align-items:center;gap:9px;padding:13px 15px;cursor:pointer;font-weight:650;color:var(--accent-strong)}
+.reminder-settings summary::-webkit-details-marker{display:none}
+.reminder-settings summary small{margin-left:auto;color:var(--text-secondary);font-size:var(--type-xs);font-weight:400}
+.reminder-settings[open] summary{border-bottom:1px solid #f3e9ed}
+.reminder-panel{padding:16px}
+.reminder-panel-heading h2{margin:0;font:600 18px var(--font-heading)}
+.reminder-panel-heading p,.reminder-device p{margin:5px 0 0;color:var(--text-secondary);font-size:var(--type-sm);line-height:1.5}
+.reminder-times{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.reminder-time{display:flex;align-items:center;gap:6px;border:1px solid #efdbe3;background:#fff8fa;border-radius:10px;padding:5px 7px 5px 11px;color:#8d3e5d;font-variant-numeric:tabular-nums;font-weight:650}
+.reminder-time button{width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:#936e7e}
+.reminder-time button:hover{background:#f8e8ee}
+.reminder-add-time,.reminder-device{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.reminder-add-time label{font-size:var(--type-sm);color:var(--text-secondary)}
+.reminder-add-time input{border:1px solid #eadde3;background:#fff;border-radius:9px;padding:8px;color:var(--text-primary);font:inherit}
+.reminder-add-time button,.reminder-toggle{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #e9c7d4;background:#fff5f8;color:#99415f;border-radius:10px;padding:7px 11px;font-weight:600;font-size:var(--type-sm)}
+.reminder-add-time button:disabled,.reminder-toggle:disabled,.reminder-time button:disabled{opacity:.55}
+.reminder-install{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;margin-top:14px;padding:10px 17px;overflow:hidden;border:1px solid #d85d83;border-radius:999px;background:linear-gradient(135deg,#df7194 0%,#cb5c83 55%,#bd527d 100%);box-shadow:0 7px 16px rgba(190,76,119,.2),inset 0 1px 0 rgba(255,255,255,.35);color:#fff;font:650 var(--type-sm) var(--font-body);letter-spacing:.01em;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+.reminder-install::before{content:'✦';display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:rgba(255,255,255,.2);font-size:13px}
+.reminder-install::after{content:'♡';position:absolute;right:13px;top:-8px;color:rgba(255,255,255,.2);font-size:32px;line-height:1;pointer-events:none}
+.reminder-install:hover{transform:translateY(-2px);filter:saturate(1.06);box-shadow:0 10px 20px rgba(190,76,119,.27),inset 0 1px 0 rgba(255,255,255,.4)}
+.reminder-install:active{transform:translateY(0) scale(.98)}
+.reminder-install:focus-visible{outline:3px solid #f0a9bf;outline-offset:3px}
+.reminder-install:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+.pwa-update-banner{position:fixed;right:22px;bottom:22px;z-index:30;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 32px);padding:10px 12px 10px 15px;border:1px solid #efd4df;border-radius:16px;background:rgba(255,250,252,.97);box-shadow:0 12px 34px rgba(80,45,63,.18);color:#694657;backdrop-filter:blur(12px);font-size:var(--type-sm)}
+.pwa-update-banner>span{display:flex;align-items:center;gap:8px}
+.pwa-update-banner>span svg{flex:none;color:#ca5c82}
+.pwa-update-banner button{min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 12px;border:1px solid #c84f76;border-radius:11px;background:linear-gradient(135deg,#d96b90,#c6537c);box-shadow:0 4px 10px rgba(190,76,119,.16);color:#fff;font-weight:650;white-space:nowrap}
+.pwa-update-banner button:hover{filter:brightness(.97);transform:translateY(-1px)}
+.pwa-update-banner button:focus-visible{outline:3px solid #f0a9bf;outline-offset:3px}
+.pwa-update-banner button:disabled{opacity:.65;cursor:wait;transform:none}
+.reminder-device{justify-content:space-between;border-top:1px solid #f1e7eb;margin-top:15px;padding-top:14px}
+.reminder-device-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.reminder-device strong{font-size:var(--type-sm)}
+.reminder-help,.reminder-message,.reminder-unsupported{font-size:var(--type-sm);line-height:1.5;color:var(--text-secondary);margin:10px 0 0}
+.reminder-help{color:#8d4d45;background:#fff6ef;padding:10px 12px;border-radius:10px}
+.reminder-message{color:#83516a}
+
 @keyframes pulse{0%,100%{transform:scale(1)}
 50%{transform:scale(1.2)}
 }
 @keyframes toast-in{from{opacity:0;transform:translate(-50%,10px)}
 to{opacity:1;transform:translate(-50%,0)}
 }
+@media(prefers-reduced-motion:reduce){.reminder-install{transition:none}}
+@media(max-width:600px){.pwa-update-banner{right:12px;bottom:82px;left:12px;justify-content:space-between;gap:8px;padding:9px 10px 9px 12px;border-radius:14px;font-size:12px}.pwa-update-banner button{min-height:40px;padding:7px 9px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.pwa-update-banner button{transition:none}}
 
 
 /* Responsive breakpoints. */
@@ -172,6 +214,11 @@ to{opacity:1;transform:translate(-50%,0)}
 .form-modal label{font-size:11px}
 .toast{bottom:82px;font-size:10px}
 .connection-warning{font-size:11px}
+.reminder-settings{margin-bottom:16px}
+.reminder-settings summary{padding:12px}
+.reminder-settings summary small{font-size:0}
+.reminder-panel{padding:13px}
+.reminder-device{align-items:flex-start}
 }
 
 @media(max-width:370px){.layout{padding-left:12px;padding-right:12px}

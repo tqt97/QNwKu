@@ -99,12 +99,39 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 - Ghi chú header tiếp tục ẩn trên mobile để nhường chỗ cho tên web; trạng thái checklist và món muốn thử dùng màu chữ đủ đậm.
 - Trích dẫn ở cột giới thiệu dùng cùng màu chữ phụ có tương phản cao.
 
+## Feature 5 — PWA và nhắc lịch push
+
+### Mục đích
+
+Cài planner lên màn hình chính để mở nhanh và nhận push nhắc các sự kiện đang chờ.
+
+### Cài đặt chung
+
+- Ứng dụng cung cấp Web App Manifest, biểu tượng và service worker; trang cần HTTPS (localhost dùng được khi phát triển).
+- Android cần trình duyệt hỗ trợ Push API và quyền Notifications. iPhone/iPad cần iOS/iPadOS 16.4 trở lên, cài web app lên Màn hình chính, rồi bấm bật thông báo ngay trong app đã cài.
+- Icon có bản thường cho nền tảng phổ thông và bản maskable riêng với hình chính nằm trong vùng an toàn; Apple touch icon riêng dùng cho màn hình chính iOS.
+- Mỗi deployment có revision riêng trong URL đăng ký service worker, nhờ đó app phát hiện cả thay đổi giao diện/code dù nội dung `sw.js` không đổi. App kiểm tra khi mở, quay lại foreground và mỗi giờ khi đang mở. Người dùng sẽ thấy nút **Cập nhật ngay**; xác nhận kích hoạt worker mới rồi tải lại ứng dụng. Lần cài đầu được kích hoạt tự động.
+- Service worker nhận push và mở lại planner khi người dùng chạm thông báo. Bản này cache shell/biểu tượng phục vụ cài đặt, không cam kết xem hoặc sửa planner khi mất mạng; dữ liệu và xác thực vẫn cần kết nối.
+- Người dùng có thể bật/tắt nhiều khung giờ mỗi ngày (tối đa 8), mặc định 07:00. Giờ dùng định dạng `HH:mm` và múi giờ cố định `Asia/Ho_Chi_Minh`.
+- Khung giờ được lưu ở một dòng cấu hình toàn cục trong database; thành viên planner nào cũng có thể chỉnh. Thay đổi được phát qua Supabase Realtime và áp dụng cho mọi thiết bị.
+- Mỗi trình duyệt/thiết bị đăng ký Web Push riêng. Cấu hình lịch dùng chung nhưng từng thiết bị cần được cài/mở và bật thông báo riêng; tắt một thiết bị không tắt các thiết bị khác.
+- Sau khi bật, có thể nhấn **Gửi thử** để kiểm tra ngay đường gửi tới thiết bị hiện tại; phản hồi sẽ phân biệt subscription thiếu, cấu hình VAPID thiếu hoặc push provider từ chối.
+
+### Hành vi thông báo
+
+- Tác vụ server chạy mỗi phút; nếu cron đến trễ, tác vụ bắt kịp các khung giờ trong 5 phút gần nhất. Claim database duy nhất theo thiết bị/sự kiện/ngày/giờ ngăn gửi lặp khi cron chạy lại.
+- Chỉ gửi khi có ít nhất một sự kiện tương lai; nội dung nhắc sự kiện tương lai gần nhất và số ngày còn lại.
+- Mỗi sự kiện, khung giờ, ngày địa phương và subscription nhận tối đa một push; endpoint hết hạn được dọn khỏi danh sách.
+- Nếu không có sự kiện tương lai, bỏ qua lượt gửi. Countdown trên trang tiếp tục cập nhật tại máy; Supabase Realtime đồng bộ sự kiện khi trang đang mở, còn khi quay lại app sẽ tải snapshot mới.
+- Nếu quyền thông báo bị từ chối, giao diện giải thích cách bật lại trong cài đặt quyền của trình duyệt/thiết bị. Trên iPhone/iPad cần thêm vào Màn hình chính và mở bản đã cài trước khi bật push.
+- Hỗ trợ Web Push tùy hệ điều hành/trình duyệt và quyền người dùng; PWA không thể tự cấp quyền thông báo. Người dùng cũng cần cho phép thông báo trong cài đặt hệ điều hành/trình duyệt và tắt Focus/Không làm phiền nếu muốn thấy banner ngay.
+
 ## Quy tắc nghiệp vụ và giới hạn
 
 - Một sự kiện có thể liên kết nhiều địa điểm và checklist.
 - Địa điểm không bắt buộc gắn sự kiện.
 - Checklist không bắt buộc gắn sự kiện.
-- Bản hiện tại không lọc/sắp xếp địa điểm, chưa có tìm kiếm, ảnh tải lên, nhắc lịch hoặc offline mode.
+- Bản hiện tại không lọc/sắp xếp địa điểm, chưa có tìm kiếm, ảnh tải lên hoặc đồng bộ dữ liệu khi offline.
 - Chưa có rate limit riêng cho đăng nhập/API.
 
 ## Tiêu chí nghiệm thu thủ công
@@ -114,3 +141,6 @@ Theo dõi vật dụng/việc cần làm trước sự kiện.
 3. Lưu/sửa/xóa món hoặc quán; checkbox đã thử lưu đúng trạng thái.
 4. Checklist đánh dấu xong và tiến độ thay đổi.
 5. Giao diện dùng được trên khung màn hình điện thoại và desktop.
+6. Trên Android dùng trình duyệt hỗ trợ Push API; trên iPhone/iPad iOS/iPadOS 16.4+ thêm app vào Màn hình chính. Bật Notifications, nhấn **Gửi thử** và xác nhận thông báo trên thiết bị.
+7. Tạo sự kiện tương lai, đặt giờ nhắc gần hiện tại và xác nhận cron gửi push; nếu test push tới nhưng lịch không gửi thì kiểm tra cron/log.
+8. Thay/xóa khung giờ trên một thiết bị cập nhật thiết lập chung ở thiết bị khác; tắt push một thiết bị không ảnh hưởng thiết bị còn lại.

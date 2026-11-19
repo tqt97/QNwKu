@@ -9,6 +9,7 @@ import EventRow from './components/EventRow';
 import PlaceRow from './components/PlaceRow';
 import ChecklistRow from './components/ChecklistRow';
 import HeroCard from './components/HeroCard';
+import ReminderSettings from './components/ReminderSettings';
 import { usePlannerRealtime, type RealtimeStatus } from './hooks/usePlannerRealtime';
 
 type FormKind = 'event' | 'place' | 'check' | null;
@@ -195,6 +196,7 @@ export default function Planner({ initialData, initialNow, connectionError }: { 
       <section className="content">
         <div className="mobile-welcome"><h1>Những ngày mình mong chờ</h1></div>
         {connectionError && <div className="connection-warning">Chưa đọc được dữ liệu Supabase: {connectionError}</div>}
+        <ReminderSettings />
         {tab !== 'places' && <HeroCard featured={featured} initialNow={initialNow} onEdit={()=>featured ? openEdit('event',featured) : openCreate('event')} onScrollToEvents={()=>document.getElementById('upcoming-events')?.scrollIntoView({behavior:'smooth',block:'start'})} />}
 
         {(tab === 'home' || tab === 'events') && <section className="section-block" id="upcoming-events">
